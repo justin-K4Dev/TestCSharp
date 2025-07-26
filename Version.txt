@@ -1,0 +1,74 @@
+﻿
+
+C# Version
+
+If you are closely related to the C # .NET Framework version
+and the Visual Studio version, the following table shows the associations for each version.
+
+	.NET Ver	C# Ver		Visual Studio Ver
+	
+	.NET 1.0	C# 1.0		Visual Studio .NET
+	.NET 1.1	C# 1.1		Visual Studio .NET 2003
+	.NET 2.0	C# 2.0		Visual Studio 2005
+	.NET 3.0	C# 2.0		Visual Studio 2005 Extensions
+	.NET 3.5	C# 3.0		Visual Studio 2008
+	.NET 4.0	C# 4.0		Visual Studio 2010
+	.NET 4.5	C# 5.0		Visual Studio 2012
+							Visual Studio 2013
+	.NET 4.6	C# 6.0		Visual Studio 2015
+	.NET 4.7	C# 7.0		Visual Studio 2017
+	
+	* Visual Studio 2010 supports .NET 2.0, .NET 3.0, and .NET 3.5 as well as .NET 4.0.
+	* Visual Studio 2008 supports .NET 2.0 and .NET 3.0 as well as .NET 3.5.
+	
+	
+Key features by C# version
+
+The following is a summary of the major new features for each version of C#.
+
+	C# Ver			Key Features
+	
+	C# 2.0			Generics
+					Anonymous Method
+					Nullable Type
+					Partial Type
+					C# yield keyword
+					Delegate of Covariance / Contravariance
+					
+	C# 3.0			Lambda Expression
+					Anonymous Type
+					Extension Method
+					C# var keyword (implicit type)
+					LINQ
+					Expression Tree
+					
+	C# 4.0			C# dynamic (Late binding)
+					Named Argument
+					Optional Argument
+					Indexed Property
+					Easier Office COM API support
+					
+	C# 5.0			C# async / await
+					Caller Information
+					
+	C# 6.0			Null-conditional operator
+					String Interpolation
+					Dictionary Initializer
+					nameof() operator
+					using static statement
+					use await in catch / finally block
+					Exception Filter support
+					Auto-Property Initializer
+					Getter only
+					Expression-bodied member
+					
+	C# 7.0			Patten Matching
+					Tuple
+					Local Function
+					Out Parameter
+					Digit Separator & Binary literal
+					Deconstructor
+					ref local & ref return
+					async Custom Return Type
+					Improved Expression-bodied expression
+					throw Expression

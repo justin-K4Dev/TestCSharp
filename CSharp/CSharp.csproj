@@ -1,0 +1,198 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <DisableCentralPackageVersions>true</DisableCentralPackageVersions>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{83F9E001-781F-4F64-A98B-39F71D0DA627}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CSharp</RootNamespace>
+    <AssemblyName>CSharp</AssemblyName>
+    <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\out\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\out\CSharp.xml</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>6</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\out\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\out\CSharp.XML</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Logic\Advanced Step\AccessModifier.cs" />
+    <Compile Include="Logic\Advanced Step\AnonymousFunction.cs" />
+    <Compile Include="Logic\Advanced Step\AnonymousType.cs" />
+    <Compile Include="Logic\Advanced Step\Attribute.cs" />
+    <Compile Include="Logic\Advanced Step\Boxing-Unboxing.cs" />
+    <Compile Include="Logic\Advanced Step\ClassInheritance.cs" />
+    <Compile Include="Logic\Advanced Step\CLR-Memory.cs" />
+    <Compile Include="Logic\Advanced Step\Delegate.cs" />
+    <Compile Include="Logic\Advanced Step\DI.cs" />
+    <Compile Include="Logic\Advanced Step\DictionaryInitializer.cs" />
+    <Compile Include="Logic\Advanced Step\Dynamic.cs" />
+    <Compile Include="Logic\Advanced Step\ExtensionMethod.cs" />
+    <Compile Include="Logic\Advanced Step\File.cs" />
+    <Compile Include="Logic\Advanced Step\GC-Free.cs" />
+    <Compile Include="Logic\Advanced Step\Generic.cs" />
+    <Compile Include="Logic\Advanced Step\IL-Code.cs" />
+    <Compile Include="Logic\Advanced Step\Indexer.cs" />
+    <Compile Include="Logic\Advanced Step\Interface.cs" />
+    <Compile Include="Logic\Advanced Step\Lambda.cs" />
+    <Compile Include="Logic\Advanced Step\Lazy.cs" />
+    <Compile Include="Logic\Advanced Step\LINQByMehod.cs" />
+    <Compile Include="Logic\Advanced Step\LINQBySyntex.cs" />
+    <Compile Include="Logic\Advanced Step\Partial.cs" />
+    <Compile Include="Logic\Advanced Step\Reflection.cs" />
+    <Compile Include="Logic\Advanced Step\Static.cs" />
+    <Compile Include="Logic\Advanced Step\StringInterpolation.cs" />
+    <Compile Include="Logic\Advanced Step\Symbol.cs" />
+    <Compile Include="Logic\Advanced Step\UsingStatic.cs" />
+    <Compile Include="Logic\Basic Step\Array.cs" />
+    <Compile Include="Logic\Basic Step\Class.cs" />
+    <Compile Include="Logic\Basic Step\Comment.cs" />
+    <Compile Include="Logic\Basic Step\Condition.cs" />
+    <Compile Include="Logic\Basic Step\DataType.cs" />
+    <Compile Include="Logic\Basic Step\Enumerator.cs" />
+    <Compile Include="Logic\Basic Step\Event.cs" />
+    <Compile Include="Logic\Basic Step\Exception.cs" />
+    <Compile Include="Logic\Basic Step\HelloWorld.cs" />
+    <Compile Include="Logic\Basic Step\Loop.cs" />
+    <Compile Include="Logic\Basic Step\Method.cs" />
+    <Compile Include="Logic\Basic Step\Namespace.cs" />
+    <Compile Include="Logic\Basic Step\NullableType.cs" />
+    <Compile Include="Logic\Basic Step\Operator.cs" />
+    <Compile Include="Logic\Basic Step\Preprocessor.cs" />
+    <Compile Include="Logic\Basic Step\String.cs" />
+    <Compile Include="Logic\Basic Step\Structure.cs" />
+    <Compile Include="Logic\Basic Step\Using.cs" />
+    <Compile Include="Logic\Basic Step\VariableAndConstant.cs" />
+    <Compile Include="Logic\Basic Step\Yield.cs" />
+    <Compile Include="Logic\Collections\BinarySearchTree.cs" />
+    <Compile Include="Logic\Collections\Dictionary.cs" />
+    <Compile Include="Logic\Collections\DynamicArray.cs" />
+    <Compile Include="Logic\Collections\Graph.cs" />
+    <Compile Include="Logic\Collections\HashTable.cs" />
+    <Compile Include="Logic\Collections\Heap.cs" />
+    <Compile Include="Logic\Collections\HeirerchyNode.cs" />
+    <Compile Include="Logic\Collections\LinkedHashSet.cs" />
+    <Compile Include="Logic\Collections\LinkedList.cs" />
+    <Compile Include="Logic\Collections\ObservableCollection.cs" />
+    <Compile Include="Logic\Collections\Queue.cs" />
+    <Compile Include="Logic\Collections\Stack.cs" />
+    <Compile Include="Logic\Collections\Tree.cs" />
+    <Compile Include="Logic\Etc\Enumerator.cs" />
+    <Compile Include="Logic\Etc\RegularExpression.cs" />
+    <Compile Include="Logic\Multi-Thread\AsyncAwait-Example.cs" />
+    <Compile Include="Logic\Multi-Thread\AsyncAwait.cs" />
+    <Compile Include="Logic\Multi-Thread\AsynchronousDelegate.cs" />
+    <Compile Include="Logic\Multi-Thread\AutoResetEvent.cs" />
+    <Compile Include="Logic\Multi-Thread\BackgroundWorker.cs" />
+    <Compile Include="Logic\Multi-Thread\CountdownEvent.cs" />
+    <Compile Include="Logic\Multi-Thread\ManualResetEvent.cs" />
+    <Compile Include="Logic\Multi-Thread\Monitor.cs" />
+    <Compile Include="Logic\Multi-Thread\Mutex.cs" />
+    <Compile Include="Logic\Multi-Thread\Parallel.cs" />
+    <Compile Include="Logic\Multi-Thread\ReaderWriterLockSlim.cs" />
+    <Compile Include="Logic\Multi-Thread\ScopeLockAcquirer.cs" />
+    <Compile Include="Logic\Multi-Thread\Semaphore.cs" />
+    <Compile Include="Logic\Multi-Thread\SpinLock.cs" />
+    <Compile Include="Logic\Multi-Thread\SpinWait.cs" />
+    <Compile Include="Logic\Multi-Thread\TaskAsync-Example\TaskAsyncHelper.cs" />
+    <Compile Include="Logic\Multi-Thread\TaskAsyncHelper-Example.cs" />
+    <Compile Include="Logic\Multi-Thread\TaskCompletionSource-Example.cs" />
+    <Compile Include="Logic\Multi-Thread\Tasking.cs" />
+    <Compile Include="Logic\Multi-Thread\TaskScheduler.cs" />
+    <Compile Include="Logic\Multi-Thread\Thread.cs" />
+    <Compile Include="Logic\Multi-Thread\ThreadPool.cs" />
+    <Compile Include="Logic\Multi-Thread\ThreadSynchronization.cs" />
+    <Compile Include="Logic\Multi-Thread\Timer.cs" />
+    <Compile Include="Logic\Multi-Thread\UIThread.cs" />
+    <Compile Include="Logic\Tip\DynamicCompilation.cs" />
+    <Compile Include="Logic\Tip\Serialization.cs" />
+    <Compile Include="Logic\Tip\Trace.cs" />
+    <Compile Include="Logic\Tip\WinFormConsoleMode.cs" />
+    <Compile Include="Logic\Useful Interfaces\Pattern.cs" />
+    <Compile Include="Logic\Useful Interfaces\UI.cs" />
+    <Compile Include="Logic\Useful Interfaces\LINQ.cs" />
+    <Compile Include="Logic\Useful Interfaces\Service.cs" />
+    <Compile Include="Logic\Useful Interfaces\BindingValid.cs" />
+    <Compile Include="Logic\Useful Interfaces\SerializeConvert.cs" />
+    <Compile Include="Logic\Useful Interfaces\Resource.cs" />
+    <Compile Include="Logic\Useful Interfaces\CollectionEnum.cs" />
+    <Compile Include="Logic\Useful Interfaces\CompareSortCopy.cs" />
+    <Compile Include="Logic\Useful Interfaces\Etc.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Logic\Advanced Step\CLR-Heap\CLR-HeapAlloc.png" />
+    <Content Include="Logic\Advanced Step\CLR-Heap\CLR-HeapFree.png" />
+    <Content Include="Logic\Advanced Step\GC-Mode\GC-Basic.png" />
+    <Content Include="Logic\Advanced Step\GC-Mode\Server-Background-GC.png" />
+    <Content Include="Logic\Advanced Step\GC-Mode\Server-Non-Concurrent-GC.png" />
+    <Content Include="Logic\Advanced Step\GC-Mode\Workstation-Background-GC.png" />
+    <Content Include="Logic\Advanced Step\GC-Mode\Workstation-Concurrent-GC-Best.png" />
+    <Content Include="Logic\Advanced Step\GC-Mode\Workstation-Concurrent-GC.png" />
+    <Content Include="Logic\Advanced Step\GC-Mode\Workstation-Non-Concurrent-GC.png" />
+    <Content Include="Logic\Multi-Thread\AsyncAwait-Example\async-await-pattern-2.png" />
+    <Content Include="Logic\Multi-Thread\AsyncAwait-Example\async-await-pattern-3.png" />
+    <Content Include="Logic\Multi-Thread\AsyncAwait-Example\sync-pattern.png" />
+    <Content Include="Logic\Multi-Thread\TaskCompletionSource-Example\TaskCompletionSource-Basic.png" />
+    <Content Include="Logic\Multi-Thread\TaskCompletionSource-Example\TaskCompletionSource-Proxy.png" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
