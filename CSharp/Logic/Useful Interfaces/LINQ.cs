@@ -20,7 +20,7 @@ namespace UsefulInterfaces
         static void override_IGroupingTT()
         {
             /*
-                 IGrouping<TKey, TElement>
+                IGrouping<TKey, TElement>
 
                 ✅ 목적
                   - LINQ의 GroupBy 연산 결과에서 각 그룹(키와 요소 집합)을 표현하는 표준 인터페이스

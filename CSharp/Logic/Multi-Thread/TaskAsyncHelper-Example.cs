@@ -203,7 +203,6 @@ namespace MultiThread
 
         public static void Test()
         {
-            // 비동기 테스트를 위해 Main을 동기적으로 block합니다.
             //runAllTests().GetAwaiter().GetResult();
         }
     }

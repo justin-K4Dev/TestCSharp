@@ -38,9 +38,9 @@ public class Reflection
             ✅ 동적 코드 또는 Reflection.Emit 환경에서 토큰 접근 안전성을 확보
 
             ✅ MetadataToken 이란?
-            - .NET 메타데이터 테이블에서 **각 멤버(타입, 메서드, 속성 등)**를 고유하게 식별하는 정수값
-            - IL, 디버깅, Reflection.Emit, Roslyn 등에서 내부적으로 사용됨
-            - 예: Console.WriteLine(string) → 0x060005C9
+              - .NET 메타데이터 테이블에서 **각 멤버(타입, 메서드, 속성 등)**를 고유하게 식별하는 정수값
+              - IL, 디버깅, Reflection.Emit, Roslyn 등에서 내부적으로 사용됨
+              - 예: Console.WriteLine(string) → 0x060005C9
        */
 
         var method = typeof(Console).GetMethod("WriteLine", new[] { typeof(string) });

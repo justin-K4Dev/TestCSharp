@@ -18,13 +18,14 @@ public class FileScopedNamespaceDeclation
 
 
         ✅ C# 10부터 지원: File-scoped 방식
-        namespace MyApp;
+          - namespace MyApp;
 
 
         💡 참고: 관련 용어 비교
-        용어	                        설명
-        File-scoped namespace	        namespace Name; 형태, C# 10부터 지원
-        Block-scoped namespace	        namespace Name { ... } 형태, 전통 방식
-        Top-level statements	        Main() 없이 바로 실행 코드 작성 (C# 9) – 혼용 가능
+          | 용어	                     | 설명
+          |------------------------------|-----------------------------------------------------------------
+          | File-scoped namespace	     | namespace Name; 형태, C# 10부터 지원
+          | Block-scoped namespace	     | namespace Name { ... } 형태, 전통 방식
+          | Top-level statements	     | Main() 없이 바로 실행 코드 작성 (C# 9) – 혼용 가능
    */
 }

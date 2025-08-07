@@ -2,12 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+
+
 
 namespace MultiThread
 {
     public class ThreadSynchronization
     {
+        static int counter = 0;
+        static object lockObj = new object();
+        static System.Threading.Mutex mutex = new System.Threading.Mutex();
+        static System.Threading.SemaphoreSlim semaphore = new System.Threading.SemaphoreSlim(2); // 최대 2개 동시 허용
+        static System.Threading.AutoResetEvent autoEvent = new System.Threading.AutoResetEvent(false);
+        static System.Threading.ManualResetEvent manualEvent = new System.Threading.ManualResetEvent(false);
+        static System.Threading.SpinLock spinLock = new System.Threading.SpinLock();
+        static System.Threading.ReaderWriterLockSlim rwLock = new System.Threading.ReaderWriterLockSlim();
+
         static void thread_synch_what()
         {
             /*
@@ -31,6 +43,117 @@ namespace MultiThread
         }
 
 
+        static void LockWorker(object tag)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                lock (lockObj)
+                {
+                    int tmp = counter;
+                    System.Threading.Thread.Sleep(10);
+                    counter = tmp + 1;
+                    Console.WriteLine("{0} (lock): {1}", tag, counter);
+                }
+            }
+        }
+
+        static void MutexWorker(object tag)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                mutex.WaitOne();
+                try
+                {
+                    int tmp = counter;
+                    System.Threading.Thread.Sleep(10);
+                    counter = tmp + 1;
+                    Console.WriteLine("{0} (mutex): {1}", tag, counter);
+                }
+                finally
+                {
+                    mutex.ReleaseMutex();
+                }
+            }
+        }
+
+        static void SemaphoreWorker(object tag)
+        {
+            Console.WriteLine("{0}: 세마포어 대기", tag);
+            semaphore.Wait();
+            try
+            {
+                Console.WriteLine("{0}: 세마포어 진입", tag);
+                System.Threading.Thread.Sleep(100);
+            }
+            finally
+            {
+                Console.WriteLine("{0}: 세마포어 퇴장", tag);
+                semaphore.Release();
+            }
+        }
+
+        static void AutoResetWorker(object state)
+        {
+            Console.WriteLine("AutoResetEvent 대기중...");
+            autoEvent.WaitOne();
+            Console.WriteLine("AutoResetEvent 신호 받음!");
+        }
+
+        static void ManualResetWorker(object state)
+        {
+            Console.WriteLine("ManualResetEvent 대기중...");
+            manualEvent.WaitOne();
+            Console.WriteLine("ManualResetEvent 신호 받음!");
+        }
+
+        static void SpinLockWorker(object tag)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                bool lockTaken = false;
+                try
+                {
+                    spinLock.Enter(ref lockTaken);
+                    int tmp = counter;
+                    System.Threading.Thread.Sleep(10);
+                    counter = tmp + 1;
+                    Console.WriteLine("{0} (spinlock): {1}", tag, counter);
+                }
+                finally
+                {
+                    if (lockTaken) spinLock.Exit();
+                }
+            }
+        }
+
+        static void ReadWorker(object state)
+        {
+            rwLock.EnterReadLock();
+            try
+            {
+                Console.WriteLine("Reader {0}: counter={1}", System.Threading.Thread.CurrentThread.ManagedThreadId, counter);
+                System.Threading.Thread.Sleep(50);
+            }
+            finally
+            {
+                rwLock.ExitReadLock();
+            }
+        }
+
+        static void WriteWorker(object state)
+        {
+            rwLock.EnterWriteLock();
+            try
+            {
+                counter++;
+                Console.WriteLine("Writer: counter={0}", counter);
+            }
+            finally
+            {
+                rwLock.ExitWriteLock();
+            }
+        }
+
         static void dotnet_thread_synch()
         {
             /*
@@ -44,6 +167,62 @@ namespace MultiThread
                 (2) 타 쓰레드에 신호(Signal)을 보내 쓰레드 흐름을 제어하는 방식으로 AutoResetEvent, ManualResetEvent, CountdownEvent 등이 있다.
             */
             {
+                Console.WriteLine("=== [lock] ===");
+                counter = 0;
+                var t1 = new System.Threading.Thread(LockWorker);
+                var t2 = new System.Threading.Thread(LockWorker);
+                t1.Start("T1"); t2.Start("T2");
+                t1.Join(); t2.Join();
+
+                Console.WriteLine("\n=== [Mutex] ===");
+                counter = 0;
+                var m1 = new System.Threading.Thread(MutexWorker);
+                var m2 = new System.Threading.Thread(MutexWorker);
+                m1.Start("M1"); m2.Start("M2");
+                m1.Join(); m2.Join();
+
+                Console.WriteLine("\n=== [SemaphoreSlim] ===");
+                var s1 = new System.Threading.Thread(SemaphoreWorker);
+                var s2 = new System.Threading.Thread(SemaphoreWorker);
+                var s3 = new System.Threading.Thread(SemaphoreWorker);
+                s1.Start("S1"); s2.Start("S2"); s3.Start("S3");
+                s1.Join(); s2.Join(); s3.Join();
+
+                Console.WriteLine("\n=== [AutoResetEvent] ===");
+                var autoWaiter = new System.Threading.Thread(AutoResetWorker);
+                autoWaiter.Start();
+                System.Threading.Thread.Sleep(500);
+                autoEvent.Set();
+                autoWaiter.Join();
+
+                Console.WriteLine("\n=== [ManualResetEvent] ===");
+                var manualWaiter = new System.Threading.Thread(ManualResetWorker);
+                manualWaiter.Start();
+                System.Threading.Thread.Sleep(500);
+                manualEvent.Set();
+                manualWaiter.Join();
+                manualEvent.Reset();
+
+                Console.WriteLine("\n=== [SpinLock] ===");
+                counter = 0;
+                var sp1 = new System.Threading.Thread(SpinLockWorker);
+                var sp2 = new System.Threading.Thread(SpinLockWorker);
+                sp1.Start("SP1"); sp2.Start("SP2");
+                sp1.Join(); sp2.Join();
+
+                Console.WriteLine("\n=== [ReaderWriterLockSlim] ===");
+                counter = 0;
+                var rw1 = new System.Threading.Thread(ReadWorker);
+                var rw2 = new System.Threading.Thread(ReadWorker);
+                var rw3 = new System.Threading.Thread(WriteWorker);
+                rw1.Start(); rw2.Start();
+                System.Threading.Thread.Sleep(100); // Read 우선
+                rw3.Start();
+                rw1.Join(); rw2.Join(); rw3.Join();
+
+                Console.WriteLine("\n=== 모든 테스트 종료 ===");
+                Console.ReadLine();
+
                 Console.ReadLine();
             }
         }

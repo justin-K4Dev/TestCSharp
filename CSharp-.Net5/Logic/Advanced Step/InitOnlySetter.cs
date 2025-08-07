@@ -28,8 +28,8 @@ public class InitOnlySetter
             required 와 함께 사용해야 실용적 !!!
 
             🔹 도입 버전
-            ✅ C# 9.0 이상
-            🔧 .NET 5.0 이상에서 사용 가능
+              - C# 9.0 이상
+              - .NET 5.0 이상에서 사용 가능
        */
         {
             var config = new Config { Url = "https://api" }; // OK

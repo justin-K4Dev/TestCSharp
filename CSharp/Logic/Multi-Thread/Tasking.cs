@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CSharp;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -1815,14 +1816,14 @@ namespace MultiThread
         static async Task doAsyncFunc1()
         {
             Console.WriteLine(AppDomain.GetCurrentThreadId() + " doAsyncFunc1 start");
-            await doAsyncFunc2().ConfigureAwait(false);
+            await doAsyncFunc2().withoutContext();
             Console.WriteLine(AppDomain.GetCurrentThreadId() + " doAsyncFunc1 end");
         }
 
         static async Task doAsyncFunc2()
         {
             Console.WriteLine(AppDomain.GetCurrentThreadId() + " doAsyncFunc2 start");
-            await doAsyncFunc3().ConfigureAwait(false);
+            await doAsyncFunc3().withoutContext();
             Console.WriteLine(AppDomain.GetCurrentThreadId() + " doAsyncFunc2 end");
         }
 
@@ -1849,7 +1850,7 @@ namespace MultiThread
 				// 현재 SynchronizationContext를 저장 (UI 앱일 경우, UI 컨텍스트가 캡처됨)
 				var currentContext = SynchronizationContext.Current;
 				// HTTP 비동기 요청을 백그라운드에서 실행 (컨텍스트 복원 안 함)
-				var httpResponse = await httpClient.GetAsync("https://www.bynder.com").ConfigureAwait(false);
+				var httpResponse = await httpClient.GetAsync("https://www.bynder.com").withoutContext();
 
 				// 응답 처리 (UI 컨텍스트에서 처리해야 할지 판별)
 				if (currentContext != null)
@@ -1880,14 +1881,14 @@ namespace MultiThread
 			}
 
             Console.WriteLine(AppDomain.GetCurrentThreadId() + " doAsyncFunc3 start");
-            await Task.Factory.StartNew(() => { Console.WriteLine("Task TID:" + AppDomain.GetCurrentThreadId()); System.Threading.Thread.Sleep(5000); }).ConfigureAwait(false);
+            await Task.Factory.StartNew(() => { Console.WriteLine("Task TID:" + AppDomain.GetCurrentThreadId()); System.Threading.Thread.Sleep(5000); }).withoutContext();
             Console.WriteLine(AppDomain.GetCurrentThreadId() + " doAsyncFunc3 end");
         }
 
         static async Task<int> ExampleAsync()
         {
             int x = 1;
-			await Task.Delay(1000).ConfigureAwait(false);
+			await Task.Delay(1000).withoutContext();
             return x + 1;
         }
 

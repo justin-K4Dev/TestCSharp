@@ -43,7 +43,7 @@ public class Service
               - 새로운 IServiceScope(스코프 컨텍스트) 인스턴스를 생성해주는 팩토리 역할.
               - await MoveNextAsync()로 다음 데이터, Current로 현재 데이터, DisposeAsync()로 해제
 
-            ✅ **스코프(범위)**란?
+            ✅ 스코프(범위) 란?
               - DI 루트 컨테이너에서 원하는 시점에 임시 스코프 컨테이너 생성 가능
         */
 
@@ -72,7 +72,7 @@ public class Service
         } // scope2 끝나면 ScopedService Dispose 호출
 
         /*
-            출력:
+        출력:
             Scope1 Service ID: aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee
             ScopedService (aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee) disposed!
             Scope2 Service ID (a): ffffffff-gggg-hhhh-iiii-jjjjjjjjjjjj

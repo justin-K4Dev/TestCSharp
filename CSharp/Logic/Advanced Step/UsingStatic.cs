@@ -4,8 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
+
 namespace AdvancedStep
 {
+    // using static 사용
+    using static System.Console;
+
     public class UsingStatic
     {
         static void using_static_what()
@@ -20,25 +25,10 @@ namespace AdvancedStep
                 해당 C# 파일 내에서는 해당 클래스명 없이 메서드를 직접 사용할 수 있게 하였다.
                 예를 들어 아래 예제에서 처럼 처음 System.Console 클래스를 using static 과 함께 지정한 후에는
                 본문에서 Console.WriteLine() 대신 WriteLine()을 직접 사용할 수 있다.
-
-
-                    // using static 사용
-                    using static System.Console;
-
-                    namespace CS6
-                    {
-                        class Program
-                        {
-                            static void Main(string[] args)
-                            {           
-                                // Console. 생략 가능 
-                                WriteLine("csharpstudy.com");
-                            }
-                        }
-                    }
             */
             {
-                Console.ReadLine();
+                // Console. 생략 가능 
+                ReadLine();
             }
         }
 

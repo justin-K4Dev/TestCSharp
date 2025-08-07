@@ -22,17 +22,18 @@ public class Tuple
 
 
             ✅ 종류별 구분
-            종류	                            설명	                            도입 버전
-            Tuple<T1, T2, ...> (클래스형)	    참조 타입 튜플 (System.Tuple)	    C# 4.0
-            (T1, T2, ...) (값형)	            값 타입 튜플 (ValueTuple)	        C# 7.0
+              | 종류                           | 설명                           | 도입 버전
+              |--------------------------------|--------------------------------|----------
+              | Tuple<T1, T2, ...> (클래스형)  | 참조 타입 튜플 (System.Tuple)  | C# 4.0
+              | (T1, T2, ...) (값형)           | 값 타입 튜플 (ValueTuple)      | C# 7.0
 
 
             이름 붙은 튜플은 필드 이름을 통해 접근 가능
             Item1, Item2도 여전히 사용 가능
             
-            ValueTuple 이란?
-            System.ValueTuple<T1, T2, ...>는 여러 값을 하나로 묶을 수 있는
-            값 타입 튜플(struct)로, 성능이 뛰어나고 구조 분해(deconstruction)도 지원합니다.
+            🔧 ValueTuple 이란?
+              - System.ValueTuple<T1, T2, ...>는 여러 값을 하나로 묶을 수 있는
+              - 값 타입 튜플(struct)로, 성능이 뛰어나고 구조 분해(deconstruction)도 지원합니다.
        */
 
         //✅ 튜플 생성

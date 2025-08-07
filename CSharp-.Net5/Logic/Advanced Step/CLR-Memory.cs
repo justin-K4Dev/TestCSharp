@@ -109,33 +109,34 @@ public class CLRMemory
 
 
             ✅ Pinned Object Heap (POH)이란?
-            - .NET 5 이상에서 새롭게 도입된 GC 힙의 일종으로,
-            - 고정(pinned)된 객체들이 할당되는 별도의 힙입니다.
-            - Blittable 타입만 할당 가능 !!!
-            - 일반적으로 고정 객체는 이동이 불가능하므로 SOH/LOH에서 단편화를 유발할 수 있는데,
-              이를 방지하고 GC 효율을 높이기 위해 POH가 도입됨.
-            - 예: GCHandle.Alloc(obj, GCHandleType.Pinned) 또는 고정된 버퍼가 여기에 할당됩니다.
-            - POH는 Gen 2 컬렉션 시 함께 수집됩니다.
+              - .NET 5 이상에서 새롭게 도입된 GC 힙의 일종으로,
+              - 고정(pinned)된 객체들이 할당되는 별도의 힙입니다.
+              - Blittable 타입만 할당 가능 !!!
+              - 일반적으로 고정 객체는 이동이 불가능하므로 SOH/LOH에서 단편화를 유발할 수 있는데,
+                이를 방지하고 GC 효율을 높이기 위해 POH가 도입됨.
+              - 예: GCHandle.Alloc(obj, GCHandleType.Pinned) 또는 고정된 버퍼가 여기에 할당됩니다.
+              - POH는 Gen 2 컬렉션 시 함께 수집됩니다.
 
 
             🎯 Blittable 타입들의 조건 정리
-            항목	                                    가능 여부
-            ✅ Primitive 타입	                        int, float, double, byte, short, long, bool(1바이트) 등	
-            ✅ Struct (값형)	                        내부 필드가 모두 blittable일 때만 가능	
-            ✅ fixed buffer (unsafe struct)	            fixed byte[256] 같은 배열 포함 가능 (unsafe 필요)	
-            ❌ string, object, class 포함 struct	    참조형 필드 포함 → blittable 불가	
-            ❌ Nullable<T>	                            내부에 boxing 로직 필요 → blittable 아님	
-            ❌ Auto-layout struct	                    필드 순서 보장 안됨 → Interop 불안정	
-            ✅ [StructLayout(LayoutKind.Sequential)]	필드 순서 보장 → Interop 적합 → blittable 가능
+              | 항목	                                     | 가능 여부 |
+              |----------------------------------------------|-----------|------------------------------------------------------------
+              | Primitive 타입	                             | ✅       | int, float, double, byte, short, long, bool(1바이트) 등	
+              | Struct (값형)	                             | ✅       | 내부 필드가 모두 blittable일 때만 가능	
+              | fixed buffer (unsafe struct)	             | ✅       | fixed byte[256] 같은 배열 포함 가능 (unsafe 필요)	
+              | string, object, class 포함 struct	         | ❌       | 참조형 필드 포함 → blittable 불가	
+              | Nullable<T>	                                 | ❌       | 내부에 boxing 로직 필요 → blittable 아님	
+              | Auto-layout struct	                         | ❌       | 필드 순서 보장 안됨 → Interop 불안정	
+              | [StructLayout(LayoutKind.Sequential)]	     | ✅       | 필드 순서 보장 → Interop 적합 → blittable 가능
 
 
             ▶️ 메모리 흐름 요약
-            - 값 타입(struct): 스택에 직접 저장
-            - 참조 타입(class): 참조는 스택, 실제 객체는 Managed Heap에 저장
-            - 참조는 GC Root로 간주되어 객체의 생존 여부 판단 기준이 됨
-            - 객체가 살아남으면 GC 수집 시 상위 세대로 승격됨 (Gen0 → Gen1 → Gen2)
-            - POH는 pinned 객체 전용으로 단편화를 방지
-            - LOH와 POH는 Gen 2 수집 시 함께 수거됨
+              - 값 타입(struct): 스택에 직접 저장
+              - 참조 타입(class): 참조는 스택, 실제 객체는 Managed Heap에 저장
+              - 참조는 GC Root로 간주되어 객체의 생존 여부 판단 기준이 됨
+              - 객체가 살아남으면 GC 수집 시 상위 세대로 승격됨 (Gen0 → Gen1 → Gen2)
+              - POH는 pinned 객체 전용으로 단편화를 방지
+              - LOH와 POH는 Gen 2 수집 시 함께 수거됨
 
             ✅ 메모리 할당 및 메모리 해제 흐름
               - .NET Framework 4.x와 동일 + POH 관리 추가

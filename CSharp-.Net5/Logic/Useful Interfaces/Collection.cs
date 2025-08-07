@@ -5,16 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-
-
 namespace UsefulInterfaces;
-
 
 
 public class Collections
 {
-
-
     public static void Test()
     {
 

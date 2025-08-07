@@ -11,23 +11,26 @@ namespace BasicStep
         static void data_type_what()
         {
             /*
-                C# DataType	    .NET DataType       Description
-                bool	        System.Boolean	    True or False
-                byte	        System.Byte	        8 bit unsigned integer
-                sbyte	        System.SByte	    8 bit signed integer
-                short	        System.Int16	    16 bit signed integer
-                int	            System.Int32	    32 bit signed integer
-                long	        System.Int64	    64 bit signed integer
-                ushort	        System.UInt16	    16 bit unsigned integer
-                uint	        System.UInt32	    32 bit unsigned integer
-                ulong	        System.UInt64	    64 bit unsigned integer
-                float	        System.Single	    32 bit single precision, Floating point number
-                double	        System.Double	    64 bit double precision, Floating point number
-                decimal	        System.Decimal	    128 bit Decimal
-                char	        System.Char	        16 bit Unicode Character
-                string	        System.String	    Unicode String
-                                System.DateTime	    Date and Time, No separate C# keywords
-                object	        System.Object	    Any type of base class that can contain any type
+                📄 C# DataType 
+            
+                  | DataType 	   | .NET DataType      | Description
+                  |----------------|--------------------|-----------------------------------------------------------
+                  | bool	       | System.Boolean	    | True or False
+                  | byte	       | System.Byte	    | 8 bit unsigned integer
+                  | sbyte	       | System.SByte	    | 8 bit signed integer
+                  | short	       | System.Int16	    | 16 bit signed integer
+                  | int	           | System.Int32	    | 32 bit signed integer
+                  | long	       | System.Int64	    | 64 bit signed integer
+                  | ushort	       | System.UInt16	    | 16 bit unsigned integer
+                  | uint	       | System.UInt32	    | 32 bit unsigned integer
+                  | ulong	       | System.UInt64	    | 64 bit unsigned integer
+                  | float	       | System.Single	    | 32 bit single precision, Floating point number
+                  | double	       | System.Double	    | 64 bit double precision, Floating point number
+                  | decimal	       | System.Decimal	    | 128 bit Decimal
+                  | char	       | System.Char	    | 16 bit Unicode Character
+                  | string	       | System.String	    | Unicode String
+                  |                | System.DateTime	| Date and Time, No separate C# keywords
+                  | object	       | System.Object	    | Any type of base class that can contain any type
 
                 The C# compiler changes the data type converted to C# keywords to .NET.
             */

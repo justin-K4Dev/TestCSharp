@@ -18,14 +18,13 @@ public class ExpressionTree
             식 트리(Expression Tree)는 C# 코드(예: 람다식)를 데이터 구조로 표현한 것이다.
             각 노드는 메서드 호출, 연산자, 상수, 매개변수 등 표현식(Expression)을 나타낸다.
 
-
             ✅ 언제 사용하나?
-            사용                                  사례	설명
-            LINQ to SQL / Entity Framework	      쿼리 분석 및 SQL로 변환
-            DSL (도메인 특화 언어)	              식을 조작하거나 자동 생성
-            동적 코드 생성	                      런타임에 식을 구성하고 실행 (Expression.Compile())
-            ORM 최적화	                          조건문, 필터, 정렬 등을 식으로 받아 분석
-
+              | 사용                              | 사례 설명
+		      |-----------------------------------|-----------------------------------------------------------------
+              | LINQ to SQL / Entity Framework	  | 쿼리 분석 및 SQL로 변환
+              | DSL (도메인 특화 언어)	          | 식을 조작하거나 자동 생성
+              | 동적 코드 생성	                  | 런타임에 식을 구성하고 실행 (Expression.Compile())
+              | ORM 최적화	                      | 조건문, 필터, 정렬 등을 식으로 받아 분석
        */
         {
             Expression<Func<int, bool>> expr = x => x > 5;
@@ -33,10 +32,10 @@ public class ExpressionTree
 
             /*
                 ✅ 내부 구조 보기
-                Lambda
-                 └── BinaryExpression (>)
-                     ├── ParameterExpression (x)
-                     └── ConstantExpression (5) 
+                  Lambda
+                   └── BinaryExpression (>)
+                       ├── ParameterExpression (x)
+                       └── ConstantExpression (5) 
             */
         }
     }

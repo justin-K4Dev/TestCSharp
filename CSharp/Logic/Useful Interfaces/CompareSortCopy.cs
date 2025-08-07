@@ -209,7 +209,7 @@ namespace UsefulInterfaces
                 IEqualityComparer<T>
 
                 ✅ 목적
-                  - **컬렉션(특히 Dictionary, HashSet 등)**에서
+                  - 컬렉션(특히 Dictionary, HashSet 등)에서
                     동등성(Equals)과 해시코드(GetHashCode)를 커스텀해서
                     비교 기준을 원하는 대로 정의할 때 쓰는 인터페이스      
             */

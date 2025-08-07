@@ -49,8 +49,7 @@ public class DI
     static void ASPDotNET_Core_built_in()
     {
         /*
-            🏗️ ASP.NET Core Built-in DI Example
-
+            🏗️ ASP.NET Core Built-in DI
               1️. 서비스(인터페이스/구현체) 정의
               2️. Program.cs 또는 Startup.cs에서 서비스 등록
               3️. 생성자 주입을 통해 컨트롤러 또는 서비스에서 사용

@@ -241,31 +241,37 @@ namespace MultiThread
 
 		public class CustomTaskScheduler : System.Threading.Tasks.TaskScheduler
 		{
-			/// <summary>연결된 쓰레드에서 동기 Task 제공해 준다</summary>
-			/// <param name="task">큐에 대기할 Task입니다.</param>
+			// 연결된 쓰레드에서 동기 Task 제공해 준다.
+			// task : 큐에 대기할 Task입니다.
 			protected override void QueueTask(Task task)
 			{
 				TryExecuteTask(task);
 			}
 
-			/// <summary>연결된 쓰레드에서 동기 Task 제공해 준다</summary>
-			/// <param name="task">실행할 타스크</param>
-			/// <param name="taskWasPreviouslyQueued">작업이 이전에 큐에 대기되었는지 여부를 나타내는 부울입니다.이 매개 변수가 True이면 작업이 이전에 큐에 대기된 것일 수 있습니다. False이면 작업이 큐에 대기되지 않은 것입니다. 작업을 큐에 대기하지 않고 인라인으로 실행하려면 이 호출을 수행합니다.</param>
-			/// <returns>작업이 인라인으로 실행되었는지 여부를 나타내는 부울 값입니다. 성공적인 실행 시 True, 그 이외에 false</returns>
-			/// <remarks>재진입으로 인한 오류를 방지하기 위해 작업 인라이닝은 관련된 스레드의 로컬 큐에서 대기 중인 대상이 있는 경우에만 발생합니다.</remarks>
+			// 연결된 쓰레드에서 동기 Task 제공해 준다.
+			// task : 실행할 테스크
+			// taskWasPreviouslyQueued : 작업이 이전에 큐에 대기되었는지 여부를 나타내는 부울입니다.
+			//                           이 매개 변수가 True이면 작업이 이전에 큐에 대기된 것일 수 있습니다.
+			//                           False이면 작업이 큐에 대기되지 않은 것입니다.
+			//                           작업을 큐에 대기하지 않고 인라인으로 실행하려면 이 호출을 수행합니다.
+			// returns : 작업이 인라인으로 실행되었는지 여부를 나타내는 부울 값입니다.
+			//           성공적인 실행 시 True, 그 이외에 false
+			// 재진입으로 인한 오류를 방지하기 위해 작업 인라이닝은
+			// 관련된 스레드의 로컬 큐에서 대기 중인 대상이 있는 경우에만 발생합니다
 			protected override bool TryExecuteTaskInline(Task task, bool taskWasPreviouslyQueued)
 			{
 				return TryExecuteTask(task);
 			}
 
-			/// <summary>디버거를 지원하기 위해 현재 스케줄러의 큐에 대기되어 실행을 기다리고 있는 Task 인스턴스의 열거 가능한 형식을 생성합니다.</summary>
-			/// <returns>디버거가 현재 이 스케줄러의 큐에 대기된 작업을 트래버스할 수 있도록 허용하는 열거 가능한 형식입니다.</returns>
+			// 디버거를 지원하기 위해 현재 스케줄러의 큐에 대기되어
+			// 실행을 기다리고 있는 Task 인스턴스의 열거 가능한 형식을 생성합니다
+			// returns : 디버거가 현재 이 스케줄러의 큐에 대기된 작업을 트래버스할 수 있도록 허용하는 열거 가능한 형식입니다
 			protected override IEnumerable<Task> GetScheduledTasks()
 			{
 				return Enumerable.Empty<Task>();
 			}
 
-			/// <summary>이 TaskScheduler가 지원할 수 있는 최대 동시성 수준을 나타냅니다.</summary>
+			// 이 TaskScheduler가 지원할 수 있는 최대 동시성 수준을 나타냅니다
 			public override int MaximumConcurrencyLevel { get { return 1; } }
 		}
 

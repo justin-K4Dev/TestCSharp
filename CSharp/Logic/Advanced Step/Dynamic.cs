@@ -15,7 +15,7 @@ namespace AdvancedStep
         static void static_and_dynamic_language_concept()
         {
             /*
-                프로그래밍은 언어는, 그를 구분하는 한 방식으로,
+                프로그래밍 언어는, 그를 구분하는 한 방식으로,
                 컴파일시 Type Checking을 진행하는 Static Language (Statically Typed Language)와
                 런타임시 Type을 판별하는 Dynamic Language로 구분할 수 있다.
                 예를 들어, C#은 Static Language에 속하며, Python, Ruby, JavaScript 등은 Dynamic Language에 속한다.

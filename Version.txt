@@ -2,73 +2,126 @@
 
 C# Version
 
-If you are closely related to the C # .NET Framework version
-and the Visual Studio version, the following table shows the associations for each version.
+✅ .NET / C# / Visual Studio 버전 대응표
 
-	.NET Ver	C# Ver		Visual Studio Ver
-	
-	.NET 1.0	C# 1.0		Visual Studio .NET
-	.NET 1.1	C# 1.1		Visual Studio .NET 2003
-	.NET 2.0	C# 2.0		Visual Studio 2005
-	.NET 3.0	C# 2.0		Visual Studio 2005 Extensions
-	.NET 3.5	C# 3.0		Visual Studio 2008
-	.NET 4.0	C# 4.0		Visual Studio 2010
-	.NET 4.5	C# 5.0		Visual Studio 2012
-							Visual Studio 2013
-	.NET 4.6	C# 6.0		Visual Studio 2015
-	.NET 4.7	C# 7.0		Visual Studio 2017
-	
-	* Visual Studio 2010 supports .NET 2.0, .NET 3.0, and .NET 3.5 as well as .NET 4.0.
-	* Visual Studio 2008 supports .NET 2.0 and .NET 3.0 as well as .NET 3.5.
-	
-	
-Key features by C# version
+| .NET Ver      | C# Ver     | Visual Studio Ver
+|---------------|------------|------------------------------------------
+| .NET 1.0      | C# 1.0     | Visual Studio .NET
+| .NET 1.1      | C# 1.1     | Visual Studio .NET 2003
+| .NET 2.0      | C# 2.0     | Visual Studio 2005
+| .NET 3.0      | C# 2.0     | Visual Studio 2005 Extensions
+| .NET 3.5      | C# 3.0     | Visual Studio 2008
+| .NET 4.0      | C# 4.0     | Visual Studio 2010
+| .NET 4.5      | C# 5.0     | Visual Studio 2012 / 2013
+| .NET 4.6      | C# 6.0     | Visual Studio 2015
+| .NET 4.7      | C# 7.0     | Visual Studio 2017
+| .NET 4.8      | C# 7.3     | Visual Studio 2019
+| .NET Core 1.x | C# 7.0     | Visual Studio 2017
+| .NET Core 2.x | C# 7.1~7.3 | Visual Studio 2017 / 2019
+| .NET Core 3.x | C# 8.0     | Visual Studio 2019
+| .NET 5.0      | C# 9.0     | Visual Studio 2019 16.8+
+| .NET 6.0 (LTS)| C# 10.0    | Visual Studio 2022 17.0+
+| .NET 7.0      | C# 11.0    | Visual Studio 2022 17.4+
+| .NET 8.0 (LTS)| C# 12.0    | Visual Studio 2022 17.8+
+| .NET 9.0      | C# 13.0    | Visual Studio 2025 (예상)
 
-The following is a summary of the major new features for each version of C#.
+* Visual Studio 2010: .NET 2.0~4.0 지원
+* Visual Studio 2008: .NET 2.0~3.5 지원
+* .NET Core 3.0 이상부터 WinForms/WPF 지원, .NET 5.0부터 Windows/Linux/Mac 단일 런타임
 
-	C# Ver			Key Features
-	
-	C# 2.0			Generics
-					Anonymous Method
-					Nullable Type
-					Partial Type
-					C# yield keyword
-					Delegate of Covariance / Contravariance
-					
-	C# 3.0			Lambda Expression
-					Anonymous Type
-					Extension Method
-					C# var keyword (implicit type)
-					LINQ
-					Expression Tree
-					
-	C# 4.0			C# dynamic (Late binding)
-					Named Argument
-					Optional Argument
-					Indexed Property
-					Easier Office COM API support
-					
-	C# 5.0			C# async / await
-					Caller Information
-					
-	C# 6.0			Null-conditional operator
-					String Interpolation
-					Dictionary Initializer
-					nameof() operator
-					using static statement
-					use await in catch / finally block
-					Exception Filter support
-					Auto-Property Initializer
-					Getter only
-					Expression-bodied member
-					
-	C# 7.0			Patten Matching
-					Tuple
-					Local Function
-					Out Parameter
-					Digit Separator & Binary literal
-					Deconstructor
-					ref local & ref return
-					async Custom Return Type
-					Improved Expression-bodied expression
-					throw Expression
+
+✅ C# 버전별 주요 기능
+
+| C# Ver  | 주요 기능
+|---------|-------------------------------------------------------------------------------------------------------------------------------------|
+| 1.0     | 클래스, 인터페이스, 델리게이트, 이벤트, 배열 등 (기본 문법)
+| 1.2     | foreach에서 value-type 변수 사용 가능
+| 2.0     | Generics
+|         | Anonymous Method
+|         | Nullable Type
+|         | Partial Type
+|         | yield
+|         | Delegate Covariance/Contravariance
+| 3.0     | Lambda Expression
+|         | Anonymous Type
+|         | Extension Method
+|         | var (암시적 타입)
+|         | LINQ
+|         | Expression Tree
+| 4.0     | dynamic (Late binding)
+|         | Named Argument
+|         | Optional Argument
+|         | Indexed Property
+|         | COM 지원 개선
+| 5.0     | async / await
+|         | Caller Information
+| 6.0     | Null-conditional operator (?.)
+|         | String Interpolation
+|         | Dictionary Initializer
+|         | nameof() operator
+|         | using static statement
+|         | Exception Filter 지원
+|         | Auto-Property Initializer
+|         | Getter only
+|         | Expression-bodied member
+|         | catch/finally에서 await 사용
+| 7.0     | Pattern Matching
+|         | Tuple
+|         | Local Function
+|         | Out 변수 선언 (out var)
+|         | Digit Separator & Binary literal
+|         | Deconstructor
+|         | ref local & ref return
+|         | async Custom Return Type
+|         | Improved Expression-bodied member
+|         | throw Expression
+| 7.1     | async Main
+|         | default literal
+|         | foreach 내 tuple 분해
+|         | 튜플 요소명 추론
+| 7.2     | private protected 접근 제한자
+|         | Span<T> 지원
+|         | readonly struct
+|         | ref readonly, ref extension
+|         | non-trailing named argument
+| 7.3     | tuple equality
+|         | unmanaged 제약조건
+|         | stackalloc 개선
+|         | ref 재할당
+|         | enum 제약조건
+|         | fixed 문장 개선 (중첩식 허용)
+| 8.0     | nullable reference type
+|         | switch expression
+|         | using declaration
+|         | ranges and indices
+|         | asynchronous streams (await foreach)
+|         | recursive pattern
+|         | default interface implementation
+|         | readonly members
+|         | unmanaged constructed types
+| 9.0     | record
+|         | with expression
+|         | init-only setter
+|         | top-level statement
+|         | 개선된 pattern matching
+|         | target-typed new
+|         | covariant return type
+|         | module initializers
+| 10.0    | global using
+|         | file-scoped namespace
+|         | record struct
+|         | extended property pattern
+|         | lambda 개선 (natural type)
+|         | const interpolated string
+|         | assignment and deconstruction 개선
+| 11.0    | list pattern matching
+|         | raw string literal
+|         | required members
+|         | generic math
+|         | string interpolation에서 줄바꿈 지원
+|         | UTF-8 string literal
+| 12.0    | 모든 타입에 primary constructor
+|         | collection expressions
+|         | interceptors (미리보기)
+|         | params Span<T>/ReadOnlySpan<T>
+|         | ref readonly parameters

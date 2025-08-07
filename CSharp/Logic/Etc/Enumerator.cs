@@ -62,7 +62,37 @@ namespace Etc
 
         public static void Test()
         {
+            // 값 출력 및 비교
+            Console.WriteLine(CardType.Amex);                  // Amex
+            Console.WriteLine(CardType.Visa);                  // Visa
+            Console.WriteLine(CardType.MasterCard);            // MasterCard
 
+            // Equals 테스트
+            Console.WriteLine(CardType.Amex.Equals(CardType.Amex));   // True
+            Console.WriteLine(CardType.Amex.Equals(CardType.Visa));   // False
+
+            // CompareTo 테스트
+            Console.WriteLine(CardType.Amex.CompareTo(CardType.Visa));      // -1 (Amex < Visa)
+            Console.WriteLine(CardType.MasterCard.CompareTo(CardType.Visa)); // 1 (MasterCard > Visa)
+            Console.WriteLine(CardType.Visa.CompareTo(CardType.Visa));       // 0
+
+            // GetAll 테스트
+            var all = GetAll<CardType>().ToList();
+            Console.WriteLine("All Card Types:");
+            foreach (var c in all)
+                Console.WriteLine($"- {c.Name} (Id={c.Id})");
+            // 출력: Amex, Visa, MasterCard
+
+            // Dictionary key로도 사용 가능 (GetHashCode 오버라이드 필요)
+            var dict = new Dictionary<CardType, string>
+            {
+                { CardType.Amex, "American Express" },
+                { CardType.Visa, "Visa Card" }
+            };
+            Console.WriteLine(dict[CardType.Amex]); // American Express
+
+            // ToString 오버라이드
+            Console.WriteLine(CardType.MasterCard.ToString()); // MasterCard
         }
     }
 }

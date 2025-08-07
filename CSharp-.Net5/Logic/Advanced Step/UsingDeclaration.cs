@@ -34,7 +34,8 @@ public class UsingDeclaration
                         s.Dispose();
                 }
 
-            ➡ 즉, 컴파일러가 자동으로 try-finally를 만들어줍니다.
+              ➡ 즉, 컴파일러가 자동으로 try-finally를 만들어줍니다.
+
             ✅ 예외가 발생하든 안 하든, 무조건 Dispose()가 보장됩니다.
        */
 

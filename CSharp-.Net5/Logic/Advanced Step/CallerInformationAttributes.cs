@@ -26,13 +26,13 @@ public class CallerInformationAttributes
             주로 로깅, 디버깅, NotifyPropertyChanged 패턴 등에 사용됩니다.
         
             ✅ Caller Info Attribute 종류
-            특성(Attribute)	        전달 정보	                설명
-            [CallerMemberName]	    호출한 메서드 이름	        "Test", "Main" 등
-            [CallerFilePath]	    호출한 파일 경로	        전체 경로 문자열
-            [CallerLineNumber]	    호출한 소스 코드 줄 번호	정수 값
+              | 특성(Attribute)	      | 전달 정보	               | 설명
+              |-----------------------|----------------------------|---------------------------
+              | [CallerMemberName]	  | 호출한 메서드 이름	       | "Test", "Main" 등
+              | [CallerFilePath]	  | 호출한 파일 경로	       | 전체 경로 문자열
+              | [CallerLineNumber]	  | 호출한 소스 코드 줄 번호   | 정수 값
 
         */
-
         {
             // CallerMemberName이 자동으로 호출한 메서드 이름 "Test"를 전달합니다.
             CallerInfoFeature(); // ← 여기서 호출, 출력: Called from: Test

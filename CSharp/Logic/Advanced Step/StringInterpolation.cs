@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Shapes;
+
+
 
 namespace AdvancedStep
 {
@@ -19,18 +22,17 @@ namespace AdvancedStep
                 아래 예제는 직사각형 객체 r의 속성을 내삽 기능을 이용해 출력한 예이다.
                 r.Height와 r.Width라는 객체의 속성을 { } 안에 직접 쓸 수 있으며,
                 r.Height * r.Width 과 같은 연산식도 포함할 수 있다 (이 경우 ( ) 괄호로 묶어 줌).
-
-
-                    Rectangle r = new Rectangle();
-                    r.Height = 10;
-                    r.Width = 32;
-
-                    // Format string 앞에 $ 를 붙인다
-                    // {} 안에 속성 혹은 계산식 등을 넣을 수 있다.
-                    string s = $"{r.Height} x {r.Width} = {(r.Height * r.Width)}";
-                    Console.WriteLine(s);
             */
             {
+                Rectangle r = new Rectangle();
+                r.Height = 10;
+                r.Width = 32;
+
+                // Format string 앞에 $ 를 붙인다
+                // {} 안에 속성 혹은 계산식 등을 넣을 수 있다.
+                string s = $"{r.Height} x {r.Width} = {(r.Height * r.Width)}";
+                Console.WriteLine(s);
+
                 Console.ReadLine();
             }
         }

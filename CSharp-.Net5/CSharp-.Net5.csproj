@@ -16,10 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Helper\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="Logic\Advanced Step\Span.cs" />
   </ItemGroup>
 

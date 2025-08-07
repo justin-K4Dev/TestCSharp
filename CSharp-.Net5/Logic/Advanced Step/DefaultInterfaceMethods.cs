@@ -30,12 +30,15 @@ public class DefaultInterfaceMethods
             즉, 기본 구현이 포함된 인터페이스를 만들 수 있습니다.
         
             🔹 도입 버전
-            ✅ C# 8.0 이상
-            🔧 .NET Core 3.0 이상에서 사용 가능
+              -  C# 8.0 이상
+              - .NET Core 3.0 이상에서 사용 가능
        */
+        {
+            ILogger logger = new ConsoleLogger();
+            logger.Log("Hello"); // 출력: Log: Hello
+        }
 
-        ILogger logger = new ConsoleLogger();
-        logger.Log("Hello"); // 출력: Log: Hello
+        Console.ReadLine();
     }
 
     public static void Test()

@@ -8,7 +8,7 @@ using System.Collections.Specialized;
 
 
 
-namespace CSharp
+namespace Collections
 {
     public class ObservableCollection
     {
@@ -73,8 +73,6 @@ namespace CSharp
 
         public static void Test()
         {
-
-
             ObservableCollection_what();
         }
     }

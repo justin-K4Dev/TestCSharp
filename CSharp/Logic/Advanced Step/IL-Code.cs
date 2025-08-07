@@ -23,14 +23,14 @@ namespace AdvancedStep
                 2. IL 코드의 기본 구조
                   - IL은 어셈블리어와 유사한 저수준 언어이지만, 플랫폼에 독립적입니다.
 
-                  2-1. 주요 구성요소
+                  2.1. 주요 구성요소
                     - .assembly : 어셈블리 메타정보
                     - .class : 클래스 정의
                     - .method : 메서드 정의
                     - 명령어(Instruction) : 실제 동작 수행 (ldc.i4, call, ret 등)
 
                 3. IL 코드의 문법
-                  3-1. 클래스/메서드 선언
+                  3.1. 클래스/메서드 선언
 
                     .assembly MyApp {}
                     .class public auto ansi beforefieldinit MyApp.Program
@@ -49,7 +49,7 @@ namespace AdvancedStep
                     - .class: 클래스 정의 (상속, 접근자 포함)
                     - .method: 메서드 정의 (Main이 entrypoint)
 
-                  3-2. IL 명령어(Instruction)
+                  3.2. IL 명령어(Instruction)
 
                     (1) 데이터 적재/저장
                       | 명령어     | 설명

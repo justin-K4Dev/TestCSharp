@@ -60,6 +60,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helper\TaskHelper.cs" />
     <Compile Include="Logic\Advanced Step\AccessModifier.cs" />
     <Compile Include="Logic\Advanced Step\AnonymousFunction.cs" />
     <Compile Include="Logic\Advanced Step\AnonymousType.cs" />

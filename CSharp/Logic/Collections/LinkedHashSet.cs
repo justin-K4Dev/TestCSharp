@@ -241,5 +241,4 @@ namespace Collections
 			//linked_list_what();
 		}
 	}
-
 }

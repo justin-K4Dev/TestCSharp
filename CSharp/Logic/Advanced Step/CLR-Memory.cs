@@ -75,154 +75,163 @@ namespace AdvancedStep
             // 👉 .NET Framework (예: 4.8 이하) 와 .NET 5 이상 (.NET Core 기반) 에서는 GC(가비지 컬렉션) 및 Heap 관리 방식에 차이가 있다 !!!
 
             /*
-                .NET Framework (4.x 이하)의 CLR(Common Language Runtime) 메모리 관리 구조는 .NET의 런타임 환경이며,
-                메모리 관리 구조는 크게 나누면 다음과 같은 구조적 계층을 통해 메모리를 관리하고 최적화합니다.
+                📄 CLR(Common Language Runtime) 메모리 관리 구조 
+            
+                  .NET Framework (4.x 이하)의 CLR(Common Language Runtime) 메모리 관리 구조는 .NET의 런타임 환경이며,
+                  메모리 관리 구조는 크게 나누면 다음과 같은 구조적 계층을 통해 메모리를 관리하고 최적화합니다.
 
-                이 구조는 성능과 안정성을 고려하여 GC(가비지 컬렉션) 기반으로 동작하며, 
-                Managed / Unmanaged 영역을 구분하여 동작합니다.
+                  이 구조는 성능과 안정성을 고려하여 GC(가비지 컬렉션) 기반으로 동작하며, 
+                  Managed / Unmanaged 영역을 구분하여 동작합니다.
 
-                ✅ 프로세스 가상 메모리  ← 운영체제가 프로세스마다 생성              
-                ├── [Kernel 영역]      ← OS 내부 커널 전용
-                ├── [User 영역]        ← 사용자 프로세스 메모리 공간
-                │
-                │   ├── CLR 런타임 영역 (Common Language Runtime)  ← .NET 런타임
-                │   │   ├── ✅ Managed 영역 (GC 관리 대상)
-                │   │   │   ├── Managed Heap
-                │   │   │   │   ├── SOH (Small Object Heap - Gen 0 ~ Gen 2)
-                │   │   │   │   └── LOH (Large Object Heap - Gen 2 포함)
-                │   │   │   ├── Finalization Queue (소멸자 대기 큐)
-                │   │   │   └── Type Metadata / Reflection Info
-                │   │   │
-                │   │   ├── ⚙️ CLR 내부 Unmanaged 영역 (GC 비관리, Native 구조)
-                │   │   │   ├── JIT Code Heap (IL → Native 코드 캐시)
-                │   │   │   ├── Method Table / VTable (타입 구조)
-                │   │   │   ├── Interop Layer (P/Invoke, COM 지원 등)
-                │   │   │   └── Execution Engine (보안, 예외, JIT, GC 포함)
-                │   │
-                │   ├── Native Heap (OS 제공, Marshal.AllocHGlobal 등 직접 할당)
-                │   │   └── COM, C++ 라이브러리, P/Invoke 대상 등이 여기 존재
-                │   │
-                │   ├── Stack (각 Thread 마다 존재)          ← OS가 관리, CLR이 추적 (GC Root)
-                │   │   ├── 값 형식 변수 (struct 등)
-                │   │   └── 참조형 변수 (GC Root로 사용 가능)
-                │   │
-                │   └── Code 영역
-                │       ├── IL 코드 영역
-                │       └── JIT 컴파일된 Native 코드 (일부는 CLR 내부 Heap에도 캐싱)
+                    ✅ 프로세스 가상 메모리  ← 운영체제가 프로세스마다 생성              
+                    ├── [Kernel 영역]      ← OS 내부 커널 전용
+                    ├── [User 영역]        ← 사용자 프로세스 메모리 공간
+                    │
+                    │   ├── CLR 런타임 영역 (Common Language Runtime)  ← .NET 런타임
+                    │   │   ├── ✅ Managed 영역 (GC 관리 대상)
+                    │   │   │   ├── Managed Heap
+                    │   │   │   │   ├── SOH (Small Object Heap - Gen 0 ~ Gen 2)
+                    │   │   │   │   └── LOH (Large Object Heap - Gen 2 포함)
+                    │   │   │   ├── Finalization Queue (소멸자 대기 큐)
+                    │   │   │   └── Type Metadata / Reflection Info
+                    │   │   │
+                    │   │   ├── ⚙️ CLR 내부 Unmanaged 영역 (GC 비관리, Native 구조)
+                    │   │   │   ├── JIT Code Heap (IL → Native 코드 캐시)
+                    │   │   │   ├── Method Table / VTable (타입 구조)
+                    │   │   │   ├── Interop Layer (P/Invoke, COM 지원 등)
+                    │   │   │   └── Execution Engine (보안, 예외, JIT, GC 포함)
+                    │   │
+                    │   ├── Native Heap (OS 제공, Marshal.AllocHGlobal 등 직접 할당)
+                    │   │   └── COM, C++ 라이브러리, P/Invoke 대상 등이 여기 존재
+                    │   │
+                    │   ├── Stack (각 Thread 마다 존재)          ← OS가 관리, CLR이 추적 (GC Root)
+                    │   │   ├── 값 형식 변수 (struct 등)
+                    │   │   └── 참조형 변수 (GC Root로 사용 가능)
+                    │   │
+                    │   └── Code 영역
+                    │       ├── IL 코드 영역
+                    │       └── JIT 컴파일된 Native 코드 (일부는 CLR 내부 Heap에도 캐싱)
 
                       
-                ✅ Managed 영역 (GC 관리 대상)
-                  - GC(Generational Garbage Collection)가 관리
-                  - .NET Framework의 Managed Heap은 세대(Generation) 기반으로 관리
+                    ✅ Managed 영역 (GC 관리 대상)
+                      - GC(Generational Garbage Collection)가 관리
+                      - .NET Framework의 Managed Heap은 세대(Generation) 기반으로 관리
 
-                    ✔️ Managed Heap 
-                        세대	                    설명
-                        SOH	                        85,000바이트 미만 객체 저장
-                            ├Gen 0	                새로 생성된 객체가 저장됨. 가장 자주 수집됨
-                            ├Gen 1	                Gen 0에서 살아남은 객체. 중간 단계
-                            └Gen 2	                오래 살아남은 객체. 가장 늦게 수집됨
-                        LOH (Large Object Heap)	    85,000바이트 이상 객체 저장. Gen 2와 함께 수집됨
+                        ✔️ Managed Heap
 
-                        Small Object Heap (SOH) vs Large Object Heap (LOH)
-                        Heap 종류	                용도	                                GC 적용 방식
-                        SOH	                        일반 객체 (85,000바이트 미만) 저장	    Generational GC
-                        LOH	                        대형 객체 (85,000바이트 이상) 저장	    Full GC 시에만 수집 (Gen 2와 함께)
-
-                    ✔️ Finalization Queue
-                      - 소멸자(Finalizer)가 정의된 객체가 GC에 의해 수거 대상이 되면 먼저 이 큐에 등록됨
-                      - GC는 Finalization Queue에 있는 객체의 메모리를 즉시 해제하지 않고, 
-                        전용 Finalizer Thread가 소멸자(~ClassName)를 실행한 후에 해제함
-
-                    ✔️ Type Metadata / Method Tables / Metadata Heap
-                      - 각 타입의 메타데이터 (Type, Field, MethodInfo 등)가 저장됨
-                      - Reflection 시스템이 이 정보를 참조함
+                          | 세대	                   | 설명
+                          |----------------------------|--------------------------------------------------
+                          | SOH	                       | 85,000바이트 미만 객체 저장
+                          |   ├Gen 0	               | 새로 생성된 객체가 저장됨. 가장 자주 수집됨
+                          |   ├Gen 1	               | Gen 0에서 살아남은 객체. 중간 단계
+                          |   └Gen 2	               | 오래 살아남은 객체. 가장 늦게 수집됨
+                          | LOH (Large Object Heap)	   | 85,000바이트 이상 객체 저장. Gen 2와 함께 수집
 
 
-                ⚙️ CLR 내부 Unmanaged 영역 (GC 비관리, Native 구조)
-                  - .NET 외부에서 할당된 메모리
-                  - GC가 관리하지 않음
+                          - Small Object Heap (SOH) vs Large Object Heap (LOH)
 
-                    ✔️ JIT Code Heap
-                      - IL(Intermediate Language) 코드는 처음 실행 시 Native 코드로 JIT 컴파일됨
-                      - 컴파일된 결과는 캐시에 저장되어 다음 호출 시 성능 향상
+                            | Heap 종류	               | 용도	                               | GC 적용 방식
+                            |--------------------------|---------------------------------------|--------------------------------------
+                            | SOH	                   | 일반 객체 (85,000바이트 미만) 저장	   | Generational GC
+                            | LOH	                   | 대형 객체 (85,000바이트 이상) 저장	   | Full GC 시에만 수집 (Gen 2와 함께)
 
-                    ✔️ Unmanaged 영역 / Method Tables / Metadata Heap
-                      - 각 타입의 메타데이터 (Type, Field, MethodInfo 등)가 저장됨
-                      - Reflection 시스템이 이 정보를 참조함
+                        ✔️ Finalization Queue
+                          - 소멸자(Finalizer)가 정의된 객체가 GC에 의해 수거 대상이 되면 먼저 이 큐에 등록됨
+                          - GC는 Finalization Queue에 있는 객체의 메모리를 즉시 해제하지 않고, 
+                            전용 Finalizer Thread가 소멸자(~ClassName)를 실행한 후에 해제함
 
-
-                ✅ Stack (Thread Stack)
-                  - 스레드별 지역 변수/매개변수 저장
-                  - 참조형 로컬 변수는 GC Root로 작동
-                  - 값 형식(struct)은 Stack에 직접 저장되고, GC 대상이 아님
+                        ✔️ Type Metadata / Method Tables / Metadata Heap
+                          - 각 타입의 메타데이터 (Type, Field, MethodInfo 등)가 저장됨
+                          - Reflection 시스템이 이 정보를 참조함
 
 
-                ✅ 메모리 할당 및 메모리 해제 흐름
-                  - 객체 생성 → Stack에 참조 저장 → GC 수거 시작 → GC시 Stack 스캔 → GC Root 판단 → 생존 객체 추적 및 승격 → Heap 제거
+                    ⚙️ CLR 내부 Unmanaged 영역 (GC 비관리, Native 구조)
+                      - .NET 외부에서 할당된 메모리
+                      - GC가 관리하지 않음
+
+                        ✔️ JIT Code Heap
+                          - IL(Intermediate Language) 코드는 처음 실행 시 Native 코드로 JIT 컴파일됨
+                          - 컴파일된 결과는 캐시에 저장되어 다음 호출 시 성능 향상
+
+                        ✔️ Unmanaged 영역 / Method Tables / Metadata Heap
+                          - 각 타입의 메타데이터 (Type, Field, MethodInfo 등)가 저장됨
+                          - Reflection 시스템이 이 정보를 참조함
 
 
-                ✅ .NET GC의 수거 시점은 비결정적(Non-deterministic)
-                    👉 실행 조건
-                    상황	                    가능성
-                    메모리 부족 발생	        높음
-                    많은 객체가 생성됨	        높음
-                    일정 시간 경과 있음         (백그라운드 GC)
-                    명시적 호출: GC.Collect()	즉시 실행
-                    수동 수거 없이 앱 종료	    OS가 모든 프로세스 메모리 정리함 (GC 생략 가능)
+                    ✅ Stack (Thread Stack)
+                      - 스레드별 지역 변수/매개변수 저장
+                      - 참조형 로컬 변수는 GC Root로 작동
+                      - 값 형식(struct)은 Stack에 직접 저장되고, GC 대상이 아님
 
 
-                ✅ GC 수거 상세 과정
+                    ✅ 메모리 할당 및 메모리 해제 흐름
+                      - 객체 생성 → Stack에 참조 저장 → GC 수거 시작 → GC시 Stack 스캔 → GC Root 판단 → 생존 객체 추적 및 승격 → Heap 제거
 
-                    👉 Mark Phase : GC Root로부터 참조 가능한 객체 마킹
-                      - "살아 있는 객체"를 식별하고 마킹
-                      - GC Root 탐색 시작 : 스택 변수, 정적 필드, 레지스터, GCHandle 등
-                      - GC Root에서 따라갈 수 있는 모든 객체를 "생존 객체"로 표시
-                      - 객체 그래프 탐색 방식은 깊이 우선(DFS) 또는 너비 우선(BFS)
-                      🔍 마킹된 객체는 GC가 수거하지 않음
-                      🔍 마킹되지 않은 객체만 Sweep 대상
+
+                    ✅ .NET GC의 수거 시점은 비결정적(Non-deterministic)
+
+                      👉 실행 조건
+                        | 상황	                      | 가능성
+                        |-----------------------------|----------------------------------------------------
+                        | 메모리 부족 발생	          | 높음
+                        | 많은 객체가 생성됨	      | 높음
+                        | 일정 시간 경과 있음         | (백그라운드 GC)
+                        | 명시적 호출: GC.Collect()	  | 즉시 실행
+                        | 수동 수거 없이 앱 종료	  | OS가 모든 프로세스 메모리 정리함 (GC 생략 가능)
+
+
+                    ✅ GC 수거 상세 과정
+
+                        👉 Mark Phase : GC Root로부터 참조 가능한 객체 마킹
+                          - "살아 있는 객체"를 식별하고 마킹
+                          - GC Root 탐색 시작 : 스택 변수, 정적 필드, 레지스터, GCHandle 등
+                          - GC Root에서 따라갈 수 있는 모든 객체를 "생존 객체"로 표시
+                          - 객체 그래프 탐색 방식은 깊이 우선(DFS) 또는 너비 우선(BFS)
+                          🔍 마킹된 객체는 GC가 수거하지 않음
+                          🔍 마킹되지 않은 객체만 Sweep 대상
                     
-                    👉 Sweep Phase : 참조되지 않은 객체 식별 및 정리
-                      - 마킹되지 않은(dead) 객체를 해제 후보로 지정
-                      - 힙 상에서 빈 공간으로 간주
-                      - Heap 전체 순회
-                      - 마킹되지 않은 객체 = 참조되지 않음 = 더 이상 사용되지 않음
-                      - 이를 수거 대상으로 간주하여 메모리 해제 예약
-                      - Finalizer가 등록된 객체는 해제하지 않고 F-reachable Queue로 이동
-                      🔍 수거할 객체 목록이 완성
-                      🔍 Finalizer 대상 객체는 일시 보류됨 (다음 단계로 넘김)
+                        👉 Sweep Phase : 참조되지 않은 객체 식별 및 정리
+                          - 마킹되지 않은(dead) 객체를 해제 후보로 지정
+                          - 힙 상에서 빈 공간으로 간주
+                          - Heap 전체 순회
+                          - 마킹되지 않은 객체 = 참조되지 않음 = 더 이상 사용되지 않음
+                          - 이를 수거 대상으로 간주하여 메모리 해제 예약
+                          - Finalizer가 등록된 객체는 해제하지 않고 F-reachable Queue로 이동
+                          🔍 수거할 객체 목록이 완성
+                          🔍 Finalizer 대상 객체는 일시 보류됨 (다음 단계로 넘김)
 
-                    👉 Compact Phase : 생존 객체 힙 상에서 재배치 (압축), Gen 0~2만 대상, LOH는 non-compacting
-                      - 힙 단편화(Fragmentation)를 줄이기 위해 살아 있는 객체들을 힙 앞쪽으로 이동
-                      - 마킹된 객체를 새 위치로 복사/이동
-                      - 원래 위치는 비워지고, 연속된 사용 가능한 힙 공간 확보
-                      - 객체 참조 포인터도 모두 업데이트됨
-                      - LOH 는 너무 크고, 이동 비용이 커서 압축하지 않음
-                      🔍 힙이 정리되어 이후 할당 속도 증가
-                      🔍 일부 객체 주소 변경 (단, 고정된 객체는 이동 안 함)
+                        👉 Compact Phase : 생존 객체 힙 상에서 재배치 (압축), Gen 0~2만 대상, LOH는 non-compacting
+                          - 힙 단편화(Fragmentation)를 줄이기 위해 살아 있는 객체들을 힙 앞쪽으로 이동
+                          - 마킹된 객체를 새 위치로 복사/이동
+                          - 원래 위치는 비워지고, 연속된 사용 가능한 힙 공간 확보
+                          - 객체 참조 포인터도 모두 업데이트됨
+                          - LOH 는 너무 크고, 이동 비용이 커서 압축하지 않음
+                          🔍 힙이 정리되어 이후 할당 속도 증가
+                          🔍 일부 객체 주소 변경 (단, 고정된 객체는 이동 안 함)
 
-                    👉 Finalization Queue -> F-reachable Queue 이동
-                      - 참조가 끊긴 Finalizable 객체는 즉시 해제하지 않고, Finalizer Thread가 소멸자 실행을 할 수 있도록 전용 대기열로 이동
-                      - GC Root에서 도달 불가능한 것으로 판명되면, Finalization Queue → F-reachable Queue로 이동
-                      🔍 소멸자 실행 전까지는 메모리 해제되지 않음
-                      🔍 안전한 종료를 위해 소멸자는 반드시 별도 쓰레드에서 실행됨
+                        👉 Finalization Queue -> F-reachable Queue 이동
+                          - 참조가 끊긴 Finalizable 객체는 즉시 해제하지 않고, Finalizer Thread가 소멸자 실행을 할 수 있도록 전용 대기열로 이동
+                          - GC Root에서 도달 불가능한 것으로 판명되면, Finalization Queue → F-reachable Queue로 이동
+                          🔍 소멸자 실행 전까지는 메모리 해제되지 않음
+                          🔍 안전한 종료를 위해 소멸자는 반드시 별도 쓰레드에서 실행됨
 
-                    👉 Finalizer Thread가 F-reachable 객체의 소멸자(~ClassName) 실행
-                      - C#의 ~ClassName() 소멸자를 비동기적으로 실행
-                      - Finalizer Thread가 F-reachable Queue를 차례대로 처리
-                      - 각 객체의 소멸자(~ClassName())를 호출
-                      - 리소스 정리 (파일 닫기, 핸들 해제 등)
-                      - 단, 무한 루프 또는 예외 발생 시 다음 객체로 넘어감 (안정성 우선)
-                      - Finalizer가 완료된 객체는 이제 다음 GC 사이클에서 해제 가능
-                      🔍 소멸자 실행 전까지는 메모리 해제되지 않음
-                      🔍 안전한 종료를 위해 소멸자는 반드시 별도 쓰레드에서 실행됨
+                        👉 Finalizer Thread가 F-reachable 객체의 소멸자(~ClassName) 실행
+                          - C#의 ~ClassName() 소멸자를 비동기적으로 실행
+                          - Finalizer Thread가 F-reachable Queue를 차례대로 처리
+                          - 각 객체의 소멸자(~ClassName())를 호출
+                          - 리소스 정리 (파일 닫기, 핸들 해제 등)
+                          - 단, 무한 루프 또는 예외 발생 시 다음 객체로 넘어감 (안정성 우선)
+                          - Finalizer가 완료된 객체는 이제 다음 GC 사이클에서 해제 가능
+                          🔍 소멸자 실행 전까지는 메모리 해제되지 않음
+                          🔍 안전한 종료를 위해 소멸자는 반드시 별도 쓰레드에서 실행됨
 
-                    👉 다음 GC 사이클에서 해당 객체 메모리 실제 해제 (Reclamation)
-                      - Finalizer가 끝난 객체는 이제 진짜로 메모리에서 제거됨
-                      - 이후 GC가 다시 실행될 때,
-                      - Finalizer 실행이 완료된 객체는 더 이상 보호 대상이 아님
-                      - 마킹되지 않으면 Sweep → 해제됨
-                      - 힙에서 완전히 제거되며, 공간 회수됨
-                      🔍 객체가 완전히 소멸됨 (수명 종료)
+                        👉 다음 GC 사이클에서 해당 객체 메모리 실제 해제 (Reclamation)
+                          - Finalizer가 끝난 객체는 이제 진짜로 메모리에서 제거됨
+                          - 이후 GC가 다시 실행될 때,
+                          - Finalizer 실행이 완료된 객체는 더 이상 보호 대상이 아님
+                          - 마킹되지 않으면 Sweep → 해제됨
+                          - 힙에서 완전히 제거되며, 공간 회수됨
+                          🔍 객체가 완전히 소멸됨 (수명 종료)
             */
             {
                 // [1] 값 타입은 Stack에 직접 저장, [ Stack ]
@@ -310,47 +319,50 @@ namespace AdvancedStep
                     이는 주로 Workstation GC에서 사용되며, GC 동작의 공격성과 중단 시간의 균형을 조절합니다.
 
 
-                    🔸 각 GCLatencyMode 설명
-                    모드	                설명
-                    Batch	                - 최대 처리량(Throughput) 우선
-                                            - UI/응답성보다 처리량이 중요할 때 사용
-                                            - 주로 Server GC에서 기본값
-                                            - Stop-the-world 발생 가능성 높음
-                    Interactive (기본값)	- 적절한 균형: 응답성과 처리량 모두 고려
-                                            - 대부분의 데스크탑 앱에서 기본값
-                                            - Background/Concurrent GC 허용
-                    LowLatency	            - Gen 0, Gen 1 수집만 허용
-                                            - Gen 2 수집을 일시적으로 억제
-                                            - 게임/음성/실시간 처리 중에 짧게 사용
-                                            - 수동으로 해제 필요
-                    SustainedLowLatency	    - 장기간의 낮은 지연 시간 유지
-                                            - Gen 2는 가능하나 동작 최소화
-                                            - 데이터 시각화, 음악, 비디오 편집 툴 등
-                    NoGCRegion	            - 일정 크기 이상의 힙을 확보하고 GC 자체를 중단
-                                            - GC가 절대 호출되지 않음
-                                            - 고성능 실시간 처리, GC-free 코드 수행 구간
-                                            - 종료 조건 미충족 시 자동 해제됨
-
+                  🔸 각 GCLatencyMode 설명                   
+                    | 모드	                | 설명
+                    |-----------------------|----------------------------------------------------
+                    | Batch	                | 최대 처리량(Throughput) 우선
+                    |                       | UI/응답성보다 처리량이 중요할 때 사용
+                    |                       | 주로 Server GC에서 기본값
+                    |                       | Stop-the-world 발생 가능성 높음
+                    | Interactive (기본값)	| 적절한 균형: 응답성과 처리량 모두 고려
+                    |                       | 대부분의 데스크탑 앱에서 기본값
+                    |                       | Background/Concurrent GC 허용
+                    | LowLatency	        | Gen 0, Gen 1 수집만 허용
+                    |                       | Gen 2 수집을 일시적으로 억제
+                    |                       | 게임/음성/실시간 처리 중에 짧게 사용
+                    |                       | 수동으로 해제 필요
+                    | SustainedLowLatency	| 장기간의 낮은 지연 시간 유지
+                    |                       | Gen 2는 가능하나 동작 최소화
+                    |                       | 데이터 시각화, 음악, 비디오 편집 툴 등
+                    | NoGCRegion	        | 일정 크기 이상의 힙을 확보하고 GC 자체를 중단
+                    |                       | C가 절대 호출되지 않음
+                    |                       | 고성능 실시간 처리, GC-free 코드 수행 구간
+                    |                       | 종료 조건 미충족 시 자동 해제됨
 
                     🔍 정리 비교표
-                    모드                    응답성          Throughput(처리량)     Gen 2 GC           사용 시점
-                    Batch	                ❌ 낮음        ✅ 높음                ✅	              서버 처리량 중심
-                    Interactive	            ✅ 적당함      ✅ 적당함              ✅ Background     일반 UI 앱
-                    LowLatency              ✅ 높음        ❌ 낮음                ❌ (차단)         짧은 실시간 작업
-                    SustainedLowLatency     ✅ 지속        ✅ 적당                ✅ 최소한         장기적 저지연 요구
-                    NoGCRegion              ✅ 매우 높음   ✅ 매우 높음	       ❌ (완전 중단)	  GC 없는 연산 필요 시
+                      | 모드                  | 응답성          | Throughput(처리량)  | Gen 2 GC           | 사용 시점
+                      |-----------------------|-----------------|---------------------|--------------------|-------------------------
+                      | Batch	              | ❌ 낮음        | ✅ 높음             | ✅	               | 서버 처리량 중심
+                      | Interactive	          | ✅ 적당함      | ✅ 적당함           | ✅ Background     | 일반 UI 앱
+                      | LowLatency            | ✅ 높음        | ❌ 낮음             | ❌ (차단)         | 짧은 실시간 작업
+                      | SustainedLowLatency   | ✅ 지속        | ✅ 적당             | ✅ 최소한         | 장기적 저지연 요구
+                      | NoGCRegion            | ✅ 매우 높음   | ✅ 매우 높음	      | ❌ (완전 중단)	   | GC 없는 연산 필요 시
             
 
                 🔷 GC 동작 방식 간단 요약
-                세대	                    대상 객체	                        특징
-                Gen 0	                    대부분의 단기 객체	                가장 자주 수집
-                                                                                속도 빠름 (수 밀리초 수준)
-                Gen 1	                    Gen 0 생존자 + 짧은 중기 객체	    수집 빈도 중간
-                                                                                Gen 2 승격 이전의 필터
-                Gen 2	                    장기 생존 객체, 루트 객체	        수집 비용 가장 큼
-                                                                                Full GC 시 대상
-                LOH (Large Object Heap)	    85KB 이상 객체	                    Gen 2와 함께 수집됨
-                                                                                고비용 처리
+                  | 세대	                  | 대상 객체	                      | 특징
+                  |---------------------------|-----------------------------------|-------------------------------------
+                  | Gen 0	                  | 대부분의 단기 객체	              | 가장 자주 수집
+                  |                           |                                   | 속도 빠름 (수 밀리초 수준)
+                  | Gen 1	                  | Gen 0 생존자 + 짧은 중기 객체	  | 수집 빈도 중간
+                  |                           |                                   | Gen 2 승격 이전의 필터
+                  | Gen 2	                  | 장기 생존 객체, 루트 객체	      | 수집 비용 가장 큼
+                  |                           |                                   | Full GC 시 대상
+                  | LOH (Large Object Heap)	  | 85KB 이상 객체	                  | Gen 2와 함께 수집됨
+                  |                           |                                   | 고비용 처리
+
             */
 
             // 🔍 GC 상태 확인 예제(Debug)
@@ -406,15 +418,14 @@ namespace AdvancedStep
                 낮은 지연 시간(Latency)과 빠른 UI 응답성을 목표로 설계된 경량 GC 모델입니다.
 
 
-                ✅ Workstation GC 개요
-                항목	                설명
-                대상 환경	            데스크탑 애플리케이션 (예: WPF, WinForms, Unity 등)
-                GC 목적	                사용자 경험 중심의 빠른 응답성 확보
-                스레드 모델	            기본적으로 단일 GC 스레드, 필요시 최소한의 병렬 처리
-                GC 동작 모드	        Concurrent 또는 Background
-                기본 설정	            gcServer = false, gcConcurrent = true
-                장점	                애플리케이션 UI를 최대한 중단하지 않고 GC 수행
-                단점	                서버 GC보다 처리량 낮음, 대규모 병렬 수집에 부적합
+                ✅ Workstation GC 개요               
+                  - 대상 환경	      : 데스크탑 애플리케이션 (예: WPF, WinForms, Unity 등)
+                  - GC 목적	          : 사용자 경험 중심의 빠른 응답성 확보
+                  - 스레드 모델	      : 기본적으로 단일 GC 스레드, 필요시 최소한의 병렬 처리
+                  - GC 동작 모드	  : Concurrent 또는 Background
+                  - 기본 설정	      : gcServer = false, gcConcurrent = true
+                  - 장점	          : 애플리케이션 UI를 최대한 중단하지 않고 GC 수행
+                  - 단점	          : 서버 GC보다 처리량 낮음, 대규모 병렬 수집에 부적합
 
 
                 ✅ 세부 특징
@@ -440,14 +451,14 @@ namespace AdvancedStep
 
 
                 🧩 GC 설정 (App.config 또는 Machine.config 예시)
-                    <configuration>
-                      <runtime>
-                        <!-- Workstation GC 사용 -->
-                        <gcServer enabled="false"/>
-                        <!-- Concurrent or Background GC 활성화 -->
-                        <gcConcurrent enabled="true"/>
-                      </runtime>
-                    </configuration>
+                  <configuration>
+                    <runtime>
+                      <!-- Workstation GC 사용 -->
+                      <gcServer enabled="false"/>
+                      <!-- Concurrent or Background GC 활성화 -->
+                      <gcConcurrent enabled="true"/>
+                    </runtime>
+                  </configuration>
             */
             {
                 Console.WriteLine($"IsServerGC: {GCSettings.IsServerGC}");
@@ -463,14 +474,13 @@ namespace AdvancedStep
                 주로 다중 코어 환경에서의 높은 처리량(Throughput)을 목적으로 동작하며, 웹 서버, 게임 서버, 대규모 백엔드 서비스에 적합합니다.
 
 
-                ✅ Server GC 개요 요약
-                항목	            설명
-                대상	            서버 애플리케이션 (ASP.NET, 게임 서버, 백엔드 프로세스 등)
-                목적	            높은 처리량과 효율적인 멀티코어 활용
-                기본 설정	        gcServer = true
-                GC 방식	            Stop-the-world, 병렬 수집 (Parallel)
-                특징	            각 CPU마다 독립적인 GC heap + GC thread 운영
-                사용 조건	        멀티스레드, 멀티코어 환경에서 최적 성능
+                ✅ Server GC 개요 요약  
+                  - 대상	     : 서버 애플리케이션 (ASP.NET, 게임 서버, 백엔드 프로세스 등)
+                  - 목적	     : 높은 처리량과 효율적인 멀티코어 활용
+                  - 기본 설정	 : gcServer = true
+                  - GC 방식	     : Stop-the-world, 병렬 수집 (Parallel)
+                  - 특징	     : 각 CPU마다 독립적인 GC heap + GC thread 운영
+                  - 사용 조건	 : 멀티스레드, 멀티코어 환경에서 최적 성능
 
 
                 ✅ 세부 특징
@@ -501,14 +511,14 @@ namespace AdvancedStep
 
 
                 🧩 GC 설정 (App.config 또는 Machine.config 예시)
-                    <configuration>
-                      <runtime>
-                        <!-- Server GC 활성화 -->
-                        <gcServer enabled="true"/>
-                        <!-- Concurrent GC 허용 -->
-                        <gcConcurrent enabled="true"/> <!-- .NET 4.0 이상에서 Background GC -->
-                      </runtime>
-                    </configuration>
+                  <configuration>
+                    <runtime>
+                      <!-- Server GC 활성화 -->
+                      <gcServer enabled="true"/>
+                      <!-- Concurrent GC 허용 -->
+                      <gcConcurrent enabled="true"/> <!-- .NET 4.0 이상에서 Background GC -->
+                    </runtime>
+                  </configuration>
             */
             {
                 Console.WriteLine("IsServerGC: " + GCSettings.IsServerGC); // true expected
@@ -651,12 +661,12 @@ namespace AdvancedStep
 
 				  2.2. Workstation GC 모드 설정 방법
 				    - app.config 파일에 하기와 같이 설정 한다.
-						<configuration>
-							<runtime>
-								<gcServer enabled="false" />
-								<gcConcurrent enabled="true"/> <= Non-Concurrent : enabled="false"
-							</runtime>
-						</configuration>
+					  <configuration>
+					    <runtime>
+						  <gcServer enabled="false" />
+						    <gcConcurrent enabled="true"/> <= Non-Concurrent : enabled="false"
+						</runtime>
+					  </configuration>
 
 
 				3. Server GC
@@ -698,11 +708,11 @@ namespace AdvancedStep
                   
 				  3.3. Server GC 모드 설정 방법				
 				    - app.config 파일에 하기와 같이 설정 한다.
-						<configuration>
-							<runtime>
-								<gcServer enabled="true" /> <= Non-Concurrent : enabled="false"
-							</runtime>
-						</configuration>
+					  <configuration>
+					    <runtime>
+						  <gcServer enabled="true" /> <= Non-Concurrent : enabled="false"
+					    </runtime>
+					  </configuration>
 
 			*/
         }

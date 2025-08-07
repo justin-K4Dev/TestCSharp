@@ -60,11 +60,12 @@ namespace AdvancedStep
             /*
                 ✅ 언제 발생하나?
 
-                상황	                                        예시	                           결과
-                값 타입을 object나 인터페이스로 저장할 때	     object o = 123;	                 Boxing
-                인터페이스 파라미터로 넘길 때	               IComparable c = 5;	             Boxing
-                ToString() 등 호출시 암묵적 boxing	        list.Add(3) (List<object>)	      Boxing
-                박스된 값을 다시 캐스팅할 때	               int x = (int)obj;	             Unboxing                          
+                  | 상황	                                    | 예시	                        | 결과
+                  |---------------------------------------------|-------------------------------|------------
+                  | 값 타입을 object나 인터페이스로 저장할 때   | object o = 123;	            | Boxing
+                  | 인터페이스 파라미터로 넘길 때	            I Comparable c = 5;	            | Boxing
+                  | ToString() 등 호출시 암묵적 boxing	        | list.Add(3) (List<object>)	| Boxing
+                  | 박스된 값을 다시 캐스팅할 때	            | int x = (int)obj;	            | Unboxing                          
             */
 
 
@@ -134,11 +135,13 @@ namespace AdvancedStep
         {
             /*
                 ✅ Boxing 방지 방법
-                방법	                                        설명
-                제네릭 사용	List<int>는 박싱 없음,            List<object>는 박싱 발생
-                struct의 인터페이스 사용 최소화	            인터페이스로 넘기면 박싱 발생
-                Span<T>, ref struct 활용	                   절대 힙 할당 불가 → boxing 자체 불가능
-                값 타입을 참조로 변환하지 않기	                object, IComparable, IEnumerable 등 주의  
+
+                  | 방법	                               | 설명
+                  |----------------------------------------|--------------------------------------------------
+                  | 제네릭 사용	List<int>는 박싱 없음      | List<object>는 박싱 발생
+                  | struct의 인터페이스 사용 최소화	       | 인터페이스로 넘기면 박싱 발생
+                  | Span<T>, ref struct 활용	           | 절대 힙 할당 불가 → boxing 자체 불가능
+                  | 값 타입을 참조로 변환하지 않기	       | object, IComparable, IEnumerable 등 주의  
             */
 
 
