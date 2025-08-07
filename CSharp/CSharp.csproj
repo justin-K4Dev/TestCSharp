@@ -115,7 +115,7 @@
     <Compile Include="Logic\Collections\Graph.cs" />
     <Compile Include="Logic\Collections\HashTable.cs" />
     <Compile Include="Logic\Collections\Heap.cs" />
-    <Compile Include="Logic\Collections\HeirerchyNode.cs" />
+    <Compile Include="Logic\Collections\HierarchyNode.cs" />
     <Compile Include="Logic\Collections\LinkedHashSet.cs" />
     <Compile Include="Logic\Collections\LinkedList.cs" />
     <Compile Include="Logic\Collections\ObservableCollection.cs" />
