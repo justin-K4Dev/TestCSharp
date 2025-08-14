@@ -1918,12 +1918,12 @@ namespace MultiThread
 											 |        |--( Task 생성, awaiter 준비 )
 											 |        |--( awaiter.IsCompleted? 대부분 false )
 											 |        |--[ 상태 0로 저장
-											 |        |  , **컨텍스트(SynchronizationContext/TaskScheduler) 캡처 및 복귀를 건너뜀**
+											 |        |  , 컨텍스트(SynchronizationContext/TaskScheduler) 캡처 및 복귀를 건너뜀
 											 |        |  , 상태머신 인스턴스의 MoveNext 콜백(Continuation) 등록
 			                                 |        |  , return ]
 											 |        |
 								[Task.Delay 완료되면]
-											 |--( **ThreadPool 워커 스레드에서 MoveNext() 실행** )
+											 |--( ThreadPool 워커 스레드에서 MoveNext() 실행 )
 											 |--[ await 뒤 코드 resume, awaiter.GetResult(), return x+1 ]
 											 |--[ Task 완료 및 Result=2 ]
 
@@ -1945,14 +1945,14 @@ namespace MultiThread
 				  (4) 미완료 시: 콜백 등록 & 상태 보존
 					- if (!awaiter.IsCompleted)
 					  → 상태머신의 상태를 0으로 변경(<>1__state = 0)
-					  → **컨텍스트(SynchronizationContext/TaskScheduler) 캡처 및 복귀 건너뜀**
-					  → TaskAwaiter에 상태머신 인스턴스의 MoveNext를 **Continuation(콜백)**으로 등록
+					  → **컨텍스트(SynchronizationContext/TaskScheduler) 캡처 및 복귀 건너뜀
+					  → TaskAwaiter에 상태머신 인스턴스의 MoveNext를 Continuation(콜백)으로 등록
 					  → 현재 호출 스레드는 return!
 						 (ExampleAsync는 “아직 끝나지 않은 Task”를 반환)
 
 				  (5) Task.Delay가 완료되면
 					- 타이머가 끝나고 TaskAwaiter가 등록해둔 MoveNext() 콜백 실행
-					- **항상 ThreadPool 워커 스레드에서 실행** (컨텍스트 복귀 없음)
+					- 항상 ThreadPool 워커 스레드에서 실행 (컨텍스트 복귀 없음)
 
 				  (6) 상태 0: await 뒤 코드 재개
 					- 상태: <>1__state == 0
@@ -1971,8 +1971,8 @@ namespace MultiThread
 
 				---------------------------------
 				⭐️ 요점
-				  - ConfigureAwait(false)는 await 시점의 컨텍스트(예: UI 스레드, ASP.NET 요청 컨텍스트) 캡처 및 복귀 과정을 **생략** !!!
-				  - Task가 완료되면 **바로 ThreadPool 워커 스레드에서 MoveNext() 실행** (컨텍스트 전환 X)
+				  - ConfigureAwait(false)는 await 시점의 컨텍스트(예: UI 스레드, ASP.NET 요청 컨텍스트) 캡처 및 복귀 과정을 생략 !!!
+				  - Task가 완료되면 바로 ThreadPool 워커 스레드에서 MoveNext() 실행 (컨텍스트 전환 X)
 				  - await 뒤 코드에서 UI 등 특정 컨텍스트에 안전하게 접근해야 하는 경우는 반드시 주의!
 
 

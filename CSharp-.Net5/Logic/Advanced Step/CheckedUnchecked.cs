@@ -29,7 +29,7 @@ namespace CSharp
                   - 예)
 
                     int.MaxValue(= 2,147,483,647)에 1을 더하면
-                    → **int.MinValue(-2,147,483,648)**로 돌아감
+                    → int.MinValue(-2,147,483,648)로 돌아감
 
                     int.MinValue에 1을 빼면
                     → int.MaxValue로 돌아감

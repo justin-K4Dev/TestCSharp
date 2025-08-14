@@ -15,11 +15,8 @@ using System.Threading.Tasks;
 namespace UsefulInterfaces;
 
 
-
 public class Etc
 {
-
-
     public static void Test()
     {
 

@@ -93,14 +93,14 @@ public class MemoryPool
             ┌─────────┐
             │  MemoryPool<T>   │
             └─────┬───┘
-                   │ Rent()
-                   ▼
+                        │ Rent()
+                        ▼
             ┌─────────────┐
             │ IMemoryOwner<T> (512B)   │──→ Disposable, 버퍼 포함
             └─────────────┘
-                   │
-                   ▼
-             Memory<T> → Span<T> → 처리
+                        │
+                        ▼
+            Memory<T> → Span<T> → 처리
         */
 
         {

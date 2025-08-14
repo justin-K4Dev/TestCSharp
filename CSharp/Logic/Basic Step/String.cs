@@ -57,7 +57,7 @@ namespace BasicStep
 
                 🔧 사용 문법
                     - $"문자열 {표현식}"
-                    - $ 접두사를 붙이면 문자열 안에 **중괄호 {}**로 감싼 C# 표현식을 평가해서 삽입할 수 있음
+                    - $ 접두사를 붙이면 문자열 안에 중괄호 {}로 감싼 C# 표현식을 평가해서 삽입할 수 있음
             */
             {
                 var name = "Alice";
@@ -618,7 +618,7 @@ namespace BasicStep
                 즉, DateTime.ToString("s") 와 같이 표준 Format Specifier를 지정할 수도 있고,
                 DateTime.ToString("yyyy/MM/dd") 와 같이 Custom Format Specifier를 지정할 수도 있다.
                 DateTime.ToString()와 같이 파라미터가 없을 경우는 DateTime.ToString("G")와 동일한 포맷이다.
-                또한 아래 예제에서 처럼 To****String()과 같은 보조 메서드들은
+                또한 아래 예제에서 처럼 ToXxString()과 같은 보조 메서드들은
                 각각 아래와 같은 D,T,d,t 등의 형식과 날짜 포맷이 동일하다.
             */
             {

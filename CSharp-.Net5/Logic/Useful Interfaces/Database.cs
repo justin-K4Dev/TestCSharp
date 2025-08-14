@@ -74,7 +74,7 @@ public class Database
             }
         }
         /*
-            출력:
+        출력:
             Id: 1, Name: Alice
             Id: 2, Name: Bob
             Id: 3, Name: Charlie

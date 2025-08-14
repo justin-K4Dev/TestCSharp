@@ -59,7 +59,7 @@ namespace Tip
                         }
                     }
 
-                    // ** P/Invoke로 Console API 사용 **
+                    // P/Invoke로 Console API 사용
                     // 새 콘솔 생성
                     [DllImport("kernel32.dll")]
                     static extern Boolean AllocConsole();

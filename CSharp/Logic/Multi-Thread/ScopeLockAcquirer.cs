@@ -15,7 +15,7 @@ namespace MultiThread
         private readonly object[] _lockObjects;
         private bool _locksAcquired;
 
-        // 지정된 락 객체들을 **제공된 순서대로** 획득을 시도합니다.
+        // 지정된 락 객체들을 제공된 순서대로 획득을 시도합니다.
         // 이 순서를 모든 스레드가 일관되게 지키는 것이 Deadlock 방지의 핵심입니다.
         // locks : 획득할 락 객체들의 목록입니다. 이 리스트의 순서가 락 획득 순서가 됩니다
         public ScopeLockAcquirer(IEnumerable<object> locks) // 생성자 이름도 클래스 이름에 맞춰 변경

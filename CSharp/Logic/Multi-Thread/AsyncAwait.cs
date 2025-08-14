@@ -442,11 +442,11 @@ namespace MultiThread
 			       
 
 				| 구분 | Caller 호출 방식              | Callee 내부 `await`   | 실행 특성                                                    | 설명                                                                            |
-				| ---- | ----------------------------- | --------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------- |
-				| ①   | `await Callee()`              | ❌ 없음              | 🔹 **즉시 완료**<br>🔹 **동기 실행**                        | 내부 `await` 없음 → `Task.CompletedTask` 반환됨.<br>스레드 점유 거의 없음      |
-				| ②   | `await Callee()`              | ✅ 있음              | 🔹 **비동기 처리**<br>🔹 `await` 지점에서 **중단 후 재개**  | 실제로 Task 스레드로 분리되어, 중단 후 복귀 시점까지 대기                       |
-				| ③   | `Callee();` (`await` 안 함)   | ✅ 있음              | 🔹 **Fire-and-forget**<br>🔹 예외 처리 안 됨 (주의)         | `Caller`는 결과 기다리지 않고 넘어감. <br>비동기 작업은 백그라운드에서 실행됨   |
-				| ④   | `Callee();` (`await` 안 함)   | ❌ 없음              | 🔹 **즉시 완료**<br>🔹 일반 함수 호출과 동일                | `Task.CompletedTask`만 반환. 별도의 비동기 처리는 없음                          |
+				|------|-------------------------------|-----------------------|--------------------------------------------------------------|---------------------------------------------------------------------------------|
+				| ①   | `await Callee()`              | ❌ 없음              | 즉시 완료, 동기 실행                                         | 내부 `await` 없음 → `Task.CompletedTask` 반환됨, 스레드 점유 거의 없음         |
+				| ②   | `await Callee()`              | ✅ 있음              | 비동기 처리 `await` 지점에서 중단 후 재개                    | 실제로 Task 스레드로 분리되어, 중단 후 복귀 시점까지 대기                       |
+				| ③   | `Callee();` (`await` 안 함)   | ✅ 있음              | Fire-and-forget, 예외 처리 안 됨 (주의)                      | `Caller`는 결과 기다리지 않고 넘어감. 비동기 작업은 백그라운드에서 실행됨       |
+				| ④   | `Callee();` (`await` 안 함)   | ❌ 없음              | 즉시 완료, 일반 함수 호출과 동일                             | `Task.CompletedTask`만 반환. 별도의 비동기 처리는 없음                          |
 
 
 				🔹 await로 호출하더라도, Callee 내부에 await이 없으면 즉시 동기 처리 된다.
@@ -674,14 +674,14 @@ namespace MultiThread
                   (4) 미완료 시: 콜백 등록 & 상태 보존
                     - if (!awaiter.IsCompleted)
                       → 상태머신의 상태를 0으로 변경(<>1__state = 0)
-                      → **현재 SynchronizationContext(TaskScheduler)를 캡처해 상태머신에 저장**
-                      → TaskAwaiter에 상태머신 인스턴스의 MoveNext를 **Continuation(콜백)**으로 등록
+                      → 현재 SynchronizationContext(TaskScheduler)를 캡처해 상태머신에 저장
+                      → TaskAwaiter에 상태머신 인스턴스의 MoveNext를 Continuation(콜백)으로 등록
                       → 현재 호출 스레드는 return!
                          (ExampleAsync는 “아직 끝나지 않은 Task”를 반환)
 
                   (5) Task.Delay가 완료되면
                     - 타이머가 끝나고 TaskAwaiter가 등록해둔 MoveNext() 콜백 실행
-                    - (ThreadPool 워커 스레드, **또는 캡처된 SynchronizationContext/TaskScheduler에서 실행**)
+                    - (ThreadPool 워커 스레드, 또는 캡처된 SynchronizationContext/TaskScheduler에서 실행)
 
                   (6) 상태 0: await 뒤 코드 재개
                     - 상태: <>1__state == 0
@@ -702,7 +702,7 @@ namespace MultiThread
                 ⭐️ 보충 설명:
                   - await 시점(4)에서 반드시 현재 컨텍스트(SynchronizationContext/TaskScheduler)를 캡처해둠
                     (UI 앱: UI 스레드 컨텍스트, ASP.NET: 요청 컨텍스트 등)
-                  - Task가 끝나면(5), 콜백(MoveNext)이 **캡처된 컨텍스트에서 실행됨** (동일 스레드 보장)
+                  - Task가 끝나면(5), 콜백(MoveNext)이 캡처된 컨텍스트에서 실행됨 (동일 스레드 보장)
                     → UI/ASP.NET 등에서 await 뒤 코드가 "반드시" 같은 컨텍스트(스레드)에서 실행되는 이유!
                   - ConfigureAwait(false) 사용 시 이 캡처/복귀 과정이 생략됨 (ThreadPool에서 바로 실행)
 
