@@ -4,13 +4,22 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- Utility -->
+    <PackageVersion Include="ClosedXML" Version="0.105.0" />
+    <PackageVersion Include="ClosedXML.Extensions.Mvc" Version="0.5.0" />
+    <PackageVersion Include="ClosedXML.Parser" Version="2.0.0" />
+    <PackageVersion Include="ClosedXML.Report" Version="0.2.12" />
     <PackageVersion Include="MediaBrowser.Common" Version="4.8.11" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc" Version="2.3.0" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.6" />
-    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.6" />
-    <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageVersion Include="BenchmarkDotNet" Version="0.15.1" />
-    <PackageVersion Include="AutoMapper" Version="14.0.0" />
-    <PackageVersion Include="System.Data.SQLite" Version="1.0.119" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0-rc.1.25451.107" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.0-rc.1.25451.107" />
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageVersion Include="BenchmarkDotNet" Version="0.15.4" />
+    <PackageVersion Include="AutoMapper" Version="15.0.1" />
+    <PackageVersion Include="NLog" Version="6.0.4" />
+    <PackageVersion Include="OpenQA.Selenium.Chrome.ChromeDriverExtensions" Version="1.2.0" />
+    <PackageVersion Include="Selenium.Support" Version="4.36.0" />
+    <PackageVersion Include="Selenium.WebDriver" Version="4.36.0" />
+    <PackageVersion Include="Selenium.WebDriver.ChromeDriver" Version="142.0.7444.300-beta" />
+    <PackageVersion Include="System.Data.SQLite" Version="2.0.2" />
   </ItemGroup>
 </Project>

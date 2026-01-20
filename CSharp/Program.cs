@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-
+using System.Windows.Forms;
 
 
 namespace CSharp
 {
     class Program
     {
+        [STAThread]
         static void Main(string[] args)
         {
 			Console.WriteLine($"Program.Main() Start - TID:{System.Threading.Thread.CurrentThread.ManagedThreadId}");
@@ -103,6 +103,7 @@ namespace CSharp
             //tip
             //Tip.DynamicCompilation.Test();
             //Tip.Serialization.Test();
+            //Tip.DeadLockAvoidanceTips.Test();
             //Tip.Trace.Test();
             //Tip.WinFormConsoleMode.Test();
 

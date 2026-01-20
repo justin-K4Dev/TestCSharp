@@ -409,6 +409,100 @@ namespace BasicStep
             }
         }
 
+        static void string_Split()
+        {
+            /*
+                string.Split()
+
+                📚 1. 역할 (What)
+                  - 하나의 문자열을 "구분자(Delimiter)"를 기준으로 잘라서
+                    여러 문자열 조각(string[])으로 만들어 주는 함수.
+
+                ⚙️ 2. 주요 입력 요소 (Input)
+
+                  [1] 대상 문자열 (this string)
+                      - ex) string text = "apple,banana,car";
+
+                  [2] 구분자(Separator)
+                      - char
+                        - ex) text.Split(',')
+                      - char[]
+                        - ex) text.Split(new[] { ',', ';', '|' })
+                      - string[]
+                        - ex) text.Split(new[] { "--", "::" }, ...)
+                      - 복수 구분자 가능
+
+                  [3] 옵션(StringSplitOptions)         (선택)
+                      - StringSplitOptions.None
+                        → 빈 항목 유지 (기본)
+                      - StringSplitOptions.RemoveEmptyEntries
+                        → "" (빈 문자열) 결과 제거
+                      - StringSplitOptions.TrimEntries (.NET 5+)
+                        → 각 토큰의 앞뒤 공백 제거
+                      - 둘 이상을 | 로 조합 가능
+                        → RemoveEmptyEntries | TrimEntries
+
+                  [4] 최대 분할 개수 (count)          (선택)
+                      - ex) Split(separators, count, options)
+                      - 지정된 개수만큼만 앞에서부터 나누고
+                        나머지는 마지막 항목에 그대로 남김
+            */
+
+            // 기본: 단일 구분자(char)로 Split
+            {
+                string text = "apple,banana,car";
+                string[] parts = text.Split(',');
+
+                foreach (var p in parts)
+                {
+                    Console.WriteLine(p);
+                }
+                // apple
+                // banana
+                // car
+
+                Console.ReadLine();
+            }
+
+            // 여러 개 구분자(char 배열)로 Split
+            {
+                string text = "apple,banana;car|dog";
+                char[] separators = { ',', ';', '|' };
+
+                string[] parts = text.Split(separators);
+
+                foreach (var p in parts)
+                {
+                    Console.WriteLine(p);
+                }
+                // apple
+                // banana
+                // car
+                // dog
+
+                Console.ReadLine();
+            }
+
+            // 빈 항목 제거: StringSplitOptions.RemoveEmptyEntries
+            {
+                string text = "one,,two,,,three";
+                string[] parts = text.Split(
+                    new[] { ',' },
+                    options: StringSplitOptions.RemoveEmptyEntries
+                );
+
+                foreach (var p in parts)
+                {
+                    Console.WriteLine($"[{p}]");
+                }
+                // [one]
+                // [two]
+                // [three]
+
+                Console.ReadLine();
+            }
+        }
+
 
         static void string_Format_use()
         {
@@ -1019,6 +1113,8 @@ namespace BasicStep
             //BASE64_2_byte_array_or_string();
 
             //string_Format_use();
+
+            string_Split();
 
             //binary_string_2_byte_array();
 

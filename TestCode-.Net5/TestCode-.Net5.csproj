@@ -14,6 +14,16 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" />
     <PackageReference Include="BenchmarkDotNet" />
+    <PackageReference Include="ClosedXML" />
+    <PackageReference Include="ClosedXML.Extensions.Mvc" />
+    <PackageReference Include="ClosedXML.Parser" />
+    <PackageReference Include="ClosedXML.Report" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="NLog" />
+    <PackageReference Include="OpenQA.Selenium.Chrome.ChromeDriverExtensions" />
+    <PackageReference Include="Selenium.Support" />
+    <PackageReference Include="Selenium.WebDriver" />
+    <PackageReference Include="Selenium.WebDriver.ChromeDriver" />
   </ItemGroup>
 
 </Project>

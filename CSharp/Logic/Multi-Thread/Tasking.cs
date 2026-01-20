@@ -846,9 +846,35 @@ namespace MultiThread
             await Task.CompletedTask; // 바로 이어서 동기 실행될 수 있음
         }
 
-		static void Task_with_CompletedTask()
+        static async Task<int> completedTaskWithResult()
+        {
+			return await Task.FromResult<int>(100);
+        }
+
+        static void Task_with_CompletedTask()
 		{
-			completedTask().GetAwaiter();
+			/*
+				즉시 완료 처리를 해도 될때 사용하는 Task  함수 !!!
+
+				| 항목              | Task.FromResult<T>(value)                | Task.CompletedTask                          
+				|-------------------|------------------------------------------|---------------------------------------------
+				| 용도              | 결과(T)가 있는 Task를 즉시 완료시킬 때   | 결과가 없는(Task) 걸 즉시 완료시킬 때       
+				| 리턴 타입         | Task<T>                                  | Task                                        
+				| 값 반환 가능 여부 | O (value를 담아서 반환)                  | X (값 없음)                                 
+				| 인스턴스 생성     | 호출할 때마다 Task<T> 하나 만들어짐      | .NET이 만든 하나를 재사용 (GC 대상아님)     
+				| 완료 상태         | 만든 순간 TaskStatus.RanToCompletion     | 처음부터 TaskStatus.RanToCompletion         
+				| 스케줄링 비용     | 거의 없음 (이미 완료된 Task)             | 거의 없음 (이미 완료된 Task)                
+				| 언제 쓰나         | async 메서드가 값을 돌려줘야 할 때       | async 메서드가 할 일 없고 바로 끝낼 때      
+				| 예시              | return Task.FromResult(42);              | return Task.CompletedTask;                  
+			*/
+			{
+                completedTask().GetAwaiter();
+
+                var result = completedTaskWithResult().GetAwaiter().GetResult();
+                Console.WriteLine(result);
+            }
+
+            Console.ReadLine();
         }
 
         static void Task_with_TaskContinuationOptions()

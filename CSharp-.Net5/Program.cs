@@ -33,7 +33,9 @@ namespace CSharp_Net5
             //AdvancedStep.TargetTypeNew.Test();
             //AdvancedStep.NameOf.Test();
             //AdvancedStep.NullConditionalOperator.Test().Waitt();
+            //AdvancedStep.Operator.Test();
             //AdvancedStep.Tuple.Test();
+            //AdvancedStep.String.Test();
             //AdvancedStep.StringInterpolation.Test();
             //AdvancedStep.UsingDeclaration.Test();
             //AdvancedStep.UsingStatic.Test();

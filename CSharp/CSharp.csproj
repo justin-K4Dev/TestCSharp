@@ -2,7 +2,11 @@
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <DisableCentralPackageVersions>true</DisableCentralPackageVersions>
+	<LangVersion>7.3</LangVersion>
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationManifest>.\Properties\app.manifest</ApplicationManifest>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -10,13 +14,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{83F9E001-781F-4F64-A98B-39F71D0DA627}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CSharp</RootNamespace>
     <AssemblyName>CSharp</AssemblyName>
     <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -29,7 +31,6 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\out\CSharp.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>6</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -49,6 +50,7 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
@@ -71,6 +73,7 @@
     <Compile Include="Logic\Advanced Step\Delegate.cs" />
     <Compile Include="Logic\Advanced Step\DI.cs" />
     <Compile Include="Logic\Advanced Step\DictionaryInitializer.cs" />
+    <Compile Include="Logic\Advanced Step\DPI-Scalable.cs" />
     <Compile Include="Logic\Advanced Step\Dynamic.cs" />
     <Compile Include="Logic\Advanced Step\ExtensionMethod.cs" />
     <Compile Include="Logic\Advanced Step\File.cs" />
@@ -149,6 +152,7 @@
     <Compile Include="Logic\Multi-Thread\ThreadSynchronization.cs" />
     <Compile Include="Logic\Multi-Thread\Timer.cs" />
     <Compile Include="Logic\Multi-Thread\UIThread.cs" />
+    <Compile Include="Logic\Tip\DeadLockAvoidanceTips.cs" />
     <Compile Include="Logic\Tip\DynamicCompilation.cs" />
     <Compile Include="Logic\Tip\Serialization.cs" />
     <Compile Include="Logic\Tip\Trace.cs" />

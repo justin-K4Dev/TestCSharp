@@ -303,9 +303,65 @@ namespace BasicStep
             }
         }
 
+        public static (int rows, int cols) Get2DSize<T>(T[,] array)
+        {
+            if (array == null) throw new ArgumentNullException(nameof(array));
+
+            int rows = array.GetLength(0);
+            int cols = array.GetLength(1);
+            return (rows, cols);
+        }
+
+        public static void Get2DSize<T>(T[,] array, out int rows, out int cols)
+        {
+            if (array == null) throw new ArgumentNullException(nameof(array));
+
+            rows = array.GetLength(0);
+            cols = array.GetLength(1);
+        }
+
+        public static int RowCount<T>(T[,] array) => array.GetLength(0);
+        public static int ColCount<T>(T[,] array) => array.GetLength(1);
+
+
+        static void array_Length()
+        {
+            {
+                int[,] arr = new int[3, 5]; // 3행 5열
+
+                int rows = arr.GetLength(0); // 행 길이 = 3
+                int cols = arr.GetLength(1); // 열 길이 = 5
+
+                int total = arr.Length;      // 전체 원소 개수 = 15
+
+                Console.ReadLine();
+
+                // GetLength(0) → 0번 차원 길이(2차원 배열에서 “행”)
+                // GetLength(1) → 1번 차원 길이(2차원 배열에서 “열”)
+                // Length → 전체 요소 개수(rows * cols)
+            }
+            {
+                int[,] map = new int[4, 7];
+
+                var (r, c) = Get2DSize(map);
+                // r = 4, c = 7
+
+                Console.ReadLine();
+            }
+            {
+                int[,] map = new int[4, 7];
+
+                Get2DSize(map, out int rows, out int cols);
+                // rows = 4, cols = 7
+
+                Console.ReadLine();
+            }
+        }
 
         public static void Test()
         {
+            //array_Length();
+
             //array_forward();
 
             //array_use();
