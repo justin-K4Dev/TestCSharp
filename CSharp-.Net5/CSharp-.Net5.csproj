@@ -7,8 +7,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    <CentralPackageVersionOverrideEnabled>true</CentralPackageVersionOverrideEnabled>
+	<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+	<CentralPackageVersionOverrideEnabled>true</CentralPackageVersionOverrideEnabled>
     <UseWindowsForms>true</UseWindowsForms>
     <BaseOutputPath>..\out\</BaseOutputPath>
   </PropertyGroup>
@@ -26,6 +26,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="NLog" />
     <PackageReference Include="System.Data.SQLite" />
   </ItemGroup>
 

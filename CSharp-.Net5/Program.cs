@@ -13,6 +13,7 @@ namespace CSharp_Net5
 		{
             Console.WriteLine($"Program.Main() Start - TID:{System.Threading.Thread.CurrentThread.ManagedThreadId}");
 
+            //AdvancedStep.Channel.Test();
             //AdvancedStep.ExpressionTree.Test();
             //AdvancedStep.UnsafeContext.Test();
             //AdvancedStep.PlS.Test();

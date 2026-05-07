@@ -8,7 +8,7 @@ namespace AdvancedStep
 {
     public class Symbol
     {
-        static void symbol_non_escape()
+        static void non_escape()
         {
             /*
                 @ 심벌을 문자열 앞에 사용하면, 해당 문자열 안의 Escape 문자를 무시하고 문자 그대로 인식하도록 한다.
@@ -36,7 +36,7 @@ namespace AdvancedStep
         }
 
 
-        static void symbol_multi_line_string()
+        static void multi_line_string()
         {
             /*
                 한 문자열 변수에 여러 줄의 문자열을 지정하는 경우에 @ 심벌을 사용하면 편리하다.
@@ -62,9 +62,11 @@ namespace AdvancedStep
         }
 
 
-        static void symbol_variable_name()
+        static void verbatim_identifier()
         {
             /*
+                Verbatim identifier(버베이팀 식별자) : 원문(그대로) 식별자
+            
                 마지막으로 @ 심벌은 C# 키워드 앞에 붙여 일반 변수명으로 사용할 때 유용하게 활용된다.
                 아래 예제 3-1에서 보이듯이, object는 C# 키워드 이므로 string object = "객체" 와 같이 쓸 수 없다.
                 즉, 이렇게 하면 컴파일 에러가 발생할 것이다.
@@ -100,12 +102,12 @@ namespace AdvancedStep
 
 
         public static void Test()
-        { 
-            //symbol_variable_name();
+        {
+            //verbatim_identifier();
 
-            //symbol_multi_line_string();
+            //multi_line_string();
 
-            //symbol_non_escape();
+            //non_escape();
         }
     }
 }

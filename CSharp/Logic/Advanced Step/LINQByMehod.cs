@@ -285,7 +285,7 @@ namespace AdvancedStep
                 var result = womanList
                     .Where(w => w.age > 20)
                     .OrderBy(w => w.age)                         // 오름차순 정렬
-                    .ThenBy(w => w.name)                         // 이름 기준 추가 정렬
+                    .ThenBy(w => w.name)                         // 직전 조건 정렬하에 이름 기준 추가 정렬
                     .Select(w => new                             // Select로 원하는 필드만 추출
                     {
                         Name = w.name,

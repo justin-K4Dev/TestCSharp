@@ -8,8 +8,6 @@ using System.Threading;
 using System.Threading.Tasks;
 
 
-
-
 namespace MultiThread
 {
 	public class ReaderWriterLockSlim
