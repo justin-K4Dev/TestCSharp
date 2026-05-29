@@ -1165,6 +1165,15 @@ packages.config 방식에서 패키지 폴더 지정 복원:
 nuget restore Server.sln -PackagesDirectory .nuget\packages.config
 ```
 
+업데이트 후 확인 절차:
+
+```powershell
+dotnet clean
+dotnet restore
+dotnet build
+dotnet test
+```
+
 ---
 
 #### 5.3.7. Git 관리
@@ -1602,9 +1611,111 @@ CPM에서는 NU1008 오류가 발생할 수 있다.
 
 ---
 
-## 9. Trouble Shooting
+## 9. NuGet 패키지 취약성 경고 해결 방법
 
-### 9.1. NU1008 오류
+NuGet 패키지를 설치하거나 빌드할 때 다음과 같은 취약성 경고가 발생할 수 있다.
+```powershell
+NU1901: Package has a known low severity vulnerability
+NU1902: Package has a known moderate severity vulnerability
+NU1903: Package has a known high severity vulnerability
+NU1904: Package has a known critical severity vulnerability
+```
+이 경고는 현재 프로젝트에서 사용하는 NuGet 패키지
+또는 해당 패키지가 내부적으로 참조하는 하위 패키지에 알려진 보안 취약성이 존재한다는 의미이다.
+
+### 9.1. 취약성 경고 확인
+
+먼저 현재 프로젝트의 취약 패키지를 확인한다.
+
+```powershell
+dotnet list package --vulnerable --include-transitive
+```
+전체 패키지 의존성 구조를 확인하려면 다음 명령을 사용한다.
+```powershell
+dotnet list package --include-transitive
+```
+패키지 업데이트 가능 여부도 함께 확인할 수 있다.
+```powershell
+dotnet list package --outdated
+```
+사용 중단된 패키지가 있는지도 확인한다.
+```powershell
+dotnet list package --deprecated
+```
+
+### 9.2. 직접 참조 패키지와 하위 의존성 구분
+
+취약성 경고가 발생했을 때 가장 먼저 확인해야 할 것은
+해당 패키지가 직접 참조 패키지인지, 하위 의존성 패키지인지 여부이다.
+```text
+Top-level Package      : 프로젝트에서 직접 참조한 패키지
+Transitive Package     : 다른 패키지가 내부적으로 참조한 하위 패키지
+```
+예를 들어 다음과 같은 구조가 있을 수 있다.
+```text
+X 3.8.0
+ ├─ Y 0.30.1
+ └─ D 1.0.0
+```
+이 경우 프로젝트에서 직접 설치한 패키지는 X이고,
+Y, D는 하위 의존성이다.
+
+### 9.3. 직접 참조 패키지 업데이트
+
+취약성이 직접 참조 패키지에서 발생했다면 우선 최신 안정 버전으로 업데이트한다.
+```powershell
+dotnet add package X --version 3.8.0
+dotnet add package K --version 6.1.4
+```
+또는 .csproj 파일에서 직접 수정한다.
+```xml
+<ItemGroup>
+  <PackageReference Include="X" Version="3.8.0" />
+  <PackageReference Include="K" Version="6.1.4" />
+</ItemGroup>
+```
+업데이트 후에는 반드시 다시 검사한다.
+```powershell
+dotnet restore
+dotnet list package --vulnerable --include-transitive
+```
+
+### 9.4. 하위 의존성 패키지 Override
+
+직접 참조한 패키지는 최신 버전이지만, 내부적으로 참조하는 하위 패키지에서 취약성 경고가 발생할 수 있다.
+이 경우 하위 패키지를 프로젝트에서 직접 참조하여 더 높은 버전으로 고정할 수 있다.
+```xml
+<ItemGroup>
+  <PackageReference Include="X" Version="3.8.0" />
+
+  <!-- Transitive Dependency Override -->
+  <PackageReference Include="E" Version="0.47.4" />
+  <PackageReference Include="T" Version="1.3.1" />
+</ItemGroup>
+```
+CLI 명령으로는 다음과 같이 추가한다.
+```powershell
+dotnet add package E --version 0.47.4
+dotnet add package T --version 1.3.1
+```
+
+NuGet은 일반적으로 호환 가능한 가장 높은 버전을 선택하므로,
+하위 의존성 패키지를 직접 참조하면 기존 transitive dependency 버전을 override할 수 있다.
+
+### 9.5. 취약성 심각도별 처리 기준
+
+| 경고 코드    | 심각도      | 처리 기준           |
+| -------- | -------- | --------------- |
+| `NU1901` | Low      | 정기 업데이트 대상      |
+| `NU1902` | Moderate | 사용 여부 확인 후 업데이트 |
+| `NU1903` | High     | 가능한 즉시 수정       |
+| `NU1904` | Critical | 즉시 수정           |
+
+---
+
+## 10. Trouble Shooting
+
+### 10.1. NU1008 오류
 
 오류:
 
@@ -1642,7 +1753,7 @@ PackageVersion 항목에 대한 버전을 정의해야 합니다.
 
 ---
 
-### 9.3. NU1504 중복 PackageReference 경고
+### 10.3. NU1504 중복 PackageReference 경고
 
 원인:
 
@@ -1667,7 +1778,7 @@ CPM 사용 시:
 
 ---
 
-### 9.4. RestoreProjectStyle 추가 후 NuGet 패키지 관리 UI내의 설치 목록이 불일치한 현상
+### 10.4. RestoreProjectStyle 추가 후 NuGet 패키지 관리 UI내의 설치 목록이 불일치한 현상
 
 기존 패키지가 `packages.config` 방식으로 설치되어 있는데:
 
@@ -1693,7 +1804,7 @@ PackageReference 방식으로 전환할 경우
 
 ---
 
-### 9.5. NuGet 패키지 설치 후에 packages.config가 자동으로 생성되지 않는 현상
+### 10.5. NuGet 패키지 설치 후에 packages.config가 자동으로 생성되지 않는 현상
 
 `packages.config`는 프로젝트를 열었다고 자동으로 생기지 않는다.
 
@@ -1711,7 +1822,7 @@ PackageReference 방식으로 전환할 경우
 
 ---
 
-### 9.6. packages.config 내의 내용을 직접 수정 후 NuGet 패키지 관리 UI내의 정보가 불일치한 현상
+### 10.6. packages.config 내의 내용을 직접 수정 후 NuGet 패키지 관리 UI내의 정보가 불일치한 현상
 
 원인:
 
@@ -1740,7 +1851,7 @@ Update-Package x -Version 3.6.4 -ProjectName CSharp
 
 ---
 
-### 9.7. 상위 CPM은 켜져 있지만 특정 프로젝트만 일반 PackageReference로 설정 하기
+### 10.7. 상위 CPM은 켜져 있지만 특정 프로젝트만 일반 PackageReference로 설정 하기
 
 상위 `Directory.Packages.props`에 다음이 있어도:
 
@@ -1770,7 +1881,7 @@ Update-Package x -Version 3.6.4 -ProjectName CSharp
 
 ---
 
-### 9.8. SDK-Style 프로젝트에서 Reference + HintPath를 사용할 수 있나?
+### 10.8. SDK-Style 프로젝트에서 Reference + HintPath를 사용할 수 있나?
 
 가능은 하다.
 
@@ -1794,7 +1905,7 @@ NuGet 패키지는 `PackageReference`로 관리한다.
 
 ---
 
-### 9.9. Directory.Packages.props가 있으면 Solution/packages 경로를 기본적으로 사용하게 되나?
+### 10.9. Directory.Packages.props가 있으면 Solution/packages 경로를 기본적으로 사용하게 되나?
 
 아니다.
 

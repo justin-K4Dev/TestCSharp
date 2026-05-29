@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.9.34728.123
+# Visual Studio Version 18
+VisualStudioVersion = 18.6.11806.211 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp", "CSharp\CSharp.csproj", "{83F9E001-781F-4F64-A98B-39F71D0DA627}"
 EndProject
@@ -26,7 +26,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuGet", "NuGet", "{09D8D467
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".Doc", ".Doc", "{EA1C8192-F056-43B5-BAA0-E4551D06BD4D}"
 	ProjectSection(SolutionItems) = preProject
-		Doc\CSharp_Packages_관리_가이드.md = Doc\CSharp_Packages_관리_가이드.md
+		Doc\NuGet_패키지_관리_가이드.md = Doc\NuGet_패키지_관리_가이드.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuGet-.Net5", "NuGet-.Net5\NuGet-.Net5.csproj", "{5B4882FD-CCF9-18CC-C1AB-8AFD64B245A0}"

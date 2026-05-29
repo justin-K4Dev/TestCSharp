@@ -12,7 +12,8 @@ namespace AdvancedStep
         {
             /*
                 @ 심벌을 문자열 앞에 사용하면, 해당 문자열 안의 Escape 문자를 무시하고 문자 그대로 인식하도록 한다.
-                예를 들어, 파일 패스를 지정할 때, Backslash를 한번 지정하면 이는 Escape문자로 인식되기 때문에
+                예를 들어, 파일 패스를 지정할 때, Backslash를 한번 지정하면 이
+            는 Escape문자로 인식되기 때문에
                 2개의 Backslash를를 사용하게 되는데, @ 심벌을 문자열 시작 부호전에 사용하면,
                 Backslash를 그대로 Backslash를로 인식하게 한다.
             */

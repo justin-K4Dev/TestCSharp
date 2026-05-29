@@ -46,6 +46,8 @@ namespace CSharp_Net5
             //AdvancedStep.MemoryPool.Test();
             //AdvancedStep.CLRMemory.Test();
             //AdvancedStep.GCFree.Test();
+            //AdvancedStep.Dump.CreateDump.Test();
+            //AdvancedStep.Dump.DiagnosticsClient.Test();
 
 
             //MultiThread.ValueTask.Test();

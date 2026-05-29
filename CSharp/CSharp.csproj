@@ -19,8 +19,8 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-	<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-	<CentralPackageVersionOverrideEnabled>true</CentralPackageVersionOverrideEnabled>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageVersionOverrideEnabled>true</CentralPackageVersionOverrideEnabled>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
@@ -101,6 +101,9 @@
     <Compile Include="Logic\Advanced Step\DI.cs" />
     <Compile Include="Logic\Advanced Step\DictionaryInitializer.cs" />
     <Compile Include="Logic\Advanced Step\DPI-Scalable.cs" />
+    <Compile Include="Logic\Advanced Step\Dump\HangDeadLock.cs" />
+    <Compile Include="Logic\Advanced Step\Dump\MiniDumpWriteDump.cs" />
+    <Compile Include="Logic\Advanced Step\Dump\UnhandleException.cs" />
     <Compile Include="Logic\Advanced Step\Dynamic.cs" />
     <Compile Include="Logic\Advanced Step\ExtensionMethod.cs" />
     <Compile Include="Logic\Advanced Step\File.cs" />
@@ -170,8 +173,9 @@
     <Compile Include="Logic\Multi-Thread\SemaphoreSlim.cs" />
     <Compile Include="Logic\Multi-Thread\SpinLock.cs" />
     <Compile Include="Logic\Multi-Thread\SpinWait.cs" />
-    <Compile Include="Logic\Multi-Thread\TaskAsync-Example\TaskAsyncHelper.cs" />
-    <Compile Include="Logic\Multi-Thread\TaskAsyncHelper-Example.cs" />
+    <Compile Include="Logic\Multi-Thread\TaskFlow-Example.cs" />
+    <Compile Include="Logic\Multi-Thread\TaskHelper-Example\TaskHelper.cs" />
+    <Compile Include="Logic\Multi-Thread\TaskHelper-Example.cs" />
     <Compile Include="Logic\Multi-Thread\TaskCompletionSource-Example.cs" />
     <Compile Include="Logic\Multi-Thread\Tasking.cs" />
     <Compile Include="Logic\Multi-Thread\TaskScheduler.cs" />

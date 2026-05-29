@@ -74,6 +74,7 @@ namespace CSharp
             //MultiThread.TaskCompletionSourceExample.Test();
             //MultiThread.TaskScheduler.Test();
             //MultiThread.Tasking.Test();
+            MultiThread.TaskFlowExample.Test();
             //MultiThread.Thread.Test();
             //MultiThread.ThreadPool.Test();
             //MultiThread.ThreadSynchronization.Test();
@@ -108,6 +109,9 @@ namespace CSharp
             //AdvancedStep.UsingStatic.Test();
             //AdvancedStep.CLRMemory.Test();
             //AdvancedStep.GCFree.Test();
+            //AdvancedStep.Dump.MiniDump.Test();
+            //AdvancedStep.Dump.UnhandleException.Test();
+            //AdvancedStep.Dump.HangDeadLock.Test();
 
             //-------------------------------------------------------------------------------------
             // Tip

@@ -1,5 +1,4 @@
-﻿using CSharp;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +16,7 @@ using System.Threading.Tasks;
 using System.Windows;
 
 
-
+using CSharp;
 
 
 namespace MultiThread
@@ -37,39 +36,460 @@ namespace MultiThread
 		static void Task_what()
         {
             /*
-                 Task 클래스와 이의 Generic형태인 Task<T>클래스는
-                 .NET 4.0에 도입된 새로운 클래스들로서 쓰레드풀로부터 쓰레드를 가져와 비동기 작업을 실행한다.
-                 Task 관련 클래스들과 Parallel 클래스들을 합쳐 TPL(Task Parallel Library)이라 부르는데,
-                 이들은 기본적으로 다중 CPU 병렬 처리를 염두에 두고 만들었다.
-                 Task 클래스는 .NET 4.0 이전 버전의 ThreadPool.QueueUserWorkItem()와 같은 기능을 제공하지만,
-                 보다 빠르고 유연한 기능을 갖추고 있다.
-                 Task클래스 사용을 위해 흔히 사용되는 방법은 Task.Factory.StartNew()를 사용하여
-                 실행하고자 하는 메서드에 대한 델리케이트를 지정하는 것이다.
-                 이 StartNew()는 쓰레드를 생성과 동시에 실행하는 방식이고,
-                 만약 시작을 하지 않고 Task 객체를 만들기 위해서는 Task() 생성자를 사용하여
-                 메서드 델리게이트를 지정한다.
-             */
+                📚 Task 클래스와 비동기 작업 실행
+
+                  1. 개요
+                    - Task / Task<T>는 .NET 4.0에서 도입된 비동기 작업 처리 클래스이다.
+                    - ThreadPool의 스레드를 사용하여 작업을 비동기적으로 실행한다.
+                    - TPL(Task Parallel Library)의 핵심 구성 요소이다.
+                    - 다중 CPU 환경에서 병렬 작업이나 오래 걸리는 작업을 처리할 때 사용한다.
+
+                  2. 기본 개념
+                    - Task는 반환값이 없는 비동기 작업을 표현한다.
+                    - Task<T>는 반환값이 있는 비동기 작업을 표현한다.
+                    - Task.Factory.StartNew()를 사용하면 Task 생성과 동시에 실행된다.
+                    - new Task(...) 생성자를 사용하면 Task 객체만 생성되고, Start() 호출 전까지 실행되지 않는다.
+                    - new Task(...) 시점에는 아직 스레드가 생성되거나 할당되지 않는다.
+                    - Start() 호출 시 TaskScheduler에 작업이 등록되며,
+                      이후 ThreadPool 스레드가 작업을 가져가 실행한다.
+
+                  3. 핵심 특징
+                    - 내부적으로 ThreadPool을 사용한다.
+                    - 직접 Thread를 생성하는 것보다 관리가 쉽고 효율적이다.
+                    - StartNew()는 작업을 생성하자마자 실행한다.
+                    - Task 생성자는 실행 시점을 직접 제어할 수 있다.
+                    - Wait()를 호출하면 해당 Task가 종료될 때까지 현재 스레드가 대기한다.
+                    - Task는 스레드를 직접 보유하지 않고,
+                      실행 시점에 ThreadPool 스레드를 할당받아 사용한다.
+
+                  4. 실행 흐름
+                    - Task.Factory.StartNew(...) 호출
+                    - Task 생성 및 즉시 실행 예약
+                    - ThreadPool 작업 큐 등록
+                    - ThreadPool 스레드 할당
+                    - 작업 실행
+                    - 작업 종료
+                    - 사용한 스레드는 ThreadPool로 반환
+
+                    - new Task(...) 호출
+                    - Task 객체만 생성 (실행 안 됨)
+                    - Start() 호출
+                    - TaskScheduler에 작업 등록
+                    - ThreadPool 작업 큐 등록
+                    - ThreadPool 스레드 할당
+                    - 작업 실행
+                    - 작업 완료
+                    - 사용한 스레드는 ThreadPool로 반환
+                    - Wait() 호출 시 작업 완료까지 대기
+
+                  5. 대표 메서드 또는 주요 코드
+                    - Task.Factory.StartNew(new Action<object>(Run), null)
+                      : object 매개변수를 받는 Run 메서드를 비동기 실행한다.
+
+                    - Task.Factory.StartNew(new Action<object>(Run), "1st")
+                      : "1st" 문자열을 Run 메서드의 인자로 전달하여 실행한다.
+
+                    - Task.Factory.StartNew(Run, "2nd")
+                      : 메서드 그룹 방식으로 Run 메서드를 실행한다.
+
+                    - new Task(new Action(Run))
+                      : Run 메서드를 실행할 Task 객체만 생성한다.
+                        이 시점에는 아직 실행되지 않으며 스레드도 할당되지 않는다.
+
+                    - new Task(() => { ... })
+                      : 람다식을 실행할 Task 객체를 생성한다.
+
+                    - Start()
+                      : Task를 TaskScheduler에 등록하여 실행을 시작한다.
+                        이후 ThreadPool 스레드가 작업을 가져가 실행한다.
+
+                    - Wait()
+                      : Task가 완료될 때까지 현재 스레드를 대기시킨다.
+
+                  6. 멀티 스레드 환경에서 작동 특징
+                    - Task는 기본적으로 ThreadPool의 작업 큐에 등록된다.
+                    - ThreadPool은 사용 가능한 스레드를 선택하여 작업을 실행한다.
+                    - 여러 Task는 동시에 실행될 수 있으므로 실행 순서는 보장되지 않는다.
+                    - Console.WriteLine 같은 출력 작업도 여러 스레드에서 호출될 수 있다.
+                    - Wait()를 사용하면 호출한 스레드는 해당 Task 완료 전까지 블로킹된다.
+                    - Task 객체 생성만으로는 스레드가 점유되지 않는다.
+                    - 실제 스레드 사용은 Start() 이후 스케줄링 시점에 결정된다.
+
+                    - 실제 스레드 할당 시점
+                      : ThreadPool이 작업 큐에서 Task를 가져가 실행하기 직전
+
+                    - 실제 스레드 반환 시점
+                      : Task 실행이 종료된 직후
+                        사용된 스레드는 제거되지 않고 ThreadPool 내부로 반환되어 재사용된다.
+
+                  7. 주의점
+                    - Task 실행 순서는 코드 작성 순서와 다를 수 있다.
+                    - Wait() 사용 시 현재 스레드가 멈추므로 UI 스레드에서는 주의해야 한다.
+                    - Task 내부에서 발생한 예외는 Wait() 또는 Result 접근 시 AggregateException으로 전달될 수 있다.
+                    - 공유 자원에 접근하는 경우 lock 등 동기화 처리가 필요하다.
+                    - StartNew()는 상황에 따라 Task.Run()보다 의도가 불명확할 수 있으므로
+			          단순 비동기 실행에는 Task.Run() 사용도 고려할 수 있다.
+                    - Task는 논리적인 작업 단위이며,
+                      실제 물리 스레드는 ThreadPool이 관리한다.
+
+                  8. 예상 결과
+                    - null이 전달된 경우 "NULL"이 출력된다.
+                    - "1st", "2nd"가 각각 출력된다.
+                    - 매개변수가 없는 Run 메서드는 "Long running method"를 출력한다.
+                    - 람다식 Task는 "Long query"를 출력한다.
+                    - 여러 Task가 병렬로 실행되므로 출력 순서는 매번 달라질 수 있다.
+
+
+                📚 Task 전체 처리 흐름도
+				
+				  1. 주요 처리 절차
+
+					new Task(...) 또는 Task.Run(...)
+					→ TaskScheduler 등록
+					→ ThreadPool 작업 큐 등록
+					→ Worker Thread가 Task 획득
+					→ 설정된 메서드 실행
+
+					→ 일반 동기 메서드
+					   또는
+					→ async 메서드
+
+					→ await 사용 여부 확인
+
+					   ├─ await 사용
+					   │   → await 대상 Task 상태 확인
+					   │   → 완료됨 : 즉시 계속 실행
+					   │   → 실행 중 : StateMachine 저장 후 일시 중단
+					   │             → Continuation 등록
+					   │             → await 대상 Task 완료
+					   │             → Context 복귀 또는 ThreadPool 재개
+					   │             → StateMachine 복원
+					   │             → await 이후 코드 실행
+					   │
+					   └─ await 없이 async 호출
+						   → Task만 반환받음
+						   → 현재 메서드는 계속 실행
+						   → 호출한 Task는 독립적으로 실행
+
+					→ async 메서드 또는 동기 메서드 종료
+					→ Task 상태 완료
+					   (RanToCompletion / Faulted / Canceled)
+
+					→ Thread 반환 및 재사용
+					→ Task 객체 유지
+					→ 참조가 없어지면 GC 대상
+				
+				  2. 전체 처리 절차 도식화 
+
+				    ┌─────────────────┐	┌──────────────────┐
+					│ [01] new Task(...)               │	│ [02] Task.Run(...)                 │
+					│                                  │	│                                    │
+					│ - Task 객체만 생성               │	│ - Task 객체 생성                   │
+					│ - 상태: Created                  │	│ - 즉시 실행 예약                   │
+					│ - 아직 실행 안 됨                │	│ - 기본 TaskScheduler 사용		  │
+					│                                  │	│ - 상태: WaitingToRun 또는 Running  │
+					└───────┬─────────┘  └───────┬──────────┘
+									│										│
+									│ [03] task.Start()                    │
+									▼										│
+						┌──────────────────────┐	│
+						│ [04] TaskScheduler 등록                    │ ◄─┘
+						│ 실행 예약 상태                             │
+						└─────┬────────────────┘	
+									│										
+									▼										
+						┌──────────────────────┐	
+						│ [05] ThreadPool 작업 큐 등록               │ 
+						└─────┬────────────────┘	
+									│
+									│ Worker Thread 대기
+									▼
+						┌────────────────────────┐
+						│ [06] Worker Thread가 Task 획득				  │
+						└─────┬──────────────────┘
+									│
+									▼
+						┌──────────────────────┐
+						│ [07] Queue에서 Task 제거                   │
+						│ 실제 실행 시작                             │
+						│ Thread 할당 시점                           │
+						└─────┬────────────────┘
+									│
+									▼
+						┌──────────────────────┐
+						│ [08] 설정된 메서드 / Lambda 실행           │
+						│ 작업 수행                                  │
+						└─────┬────────────────┘
+									│
+			                        │ 			        
+					    ┌─────┴──────────────────┐
+                        │                                                │
+                        ▼                                                ▼
+					┌───────────────┐		┌───────────────┐
+					│ [09] 일반 동기 메서드        │		│ [10] async 메서드            │──────────────────┐
+					└─┬─────────────┘		└──────┬────────┘									  │		
+						│												  │													  │
+						│												  ▼													  ▼
+						│									┌─────────────────┐                  ┌─────────────────┐
+						│									│ [11] await 사용 호출             │ 				    │ [24] await 없이 async 함수 호출	│
+						│									└──────┬──────────┘					└──────┬──────────┘
+						│												  │													  │	
+						│												  ▼													  ▼
+						│									┌─────────────────┐                  ┌─────────────────┐
+						│									│ [12] await SomeTaskAsync() 도달  │ 					│ [25] Task 객체만 반환받음	    │
+						│									└──────┬──────────┘					│ 현재 메서드는 대기 안함			│
+						│												  │										└──────┬──────────┘
+						│											      ▼													  ▼
+						│									┌─────────────────┐					┌─────────────────┐
+						│									│ [13] await 대상 Task 상태 확인   │					│ [26] 다음 코드 즉시 실행			│
+						│									└──────┬──────────┘					│ fire-and-forget 상태				│
+						│												  │										└──────┬──────────┘
+						│								┌────────┴────────┐									  ▼
+						│								│								    │						┌─────────────────────┐
+						│								▼								    ▼						│ [27] 호출한 Task가 계속 실행되는 동안	│
+						│				┌─────────────┐		┌──────────────┐		│ 현재 async 메서드는 먼저 완료 가능		│
+						│				│ [14] 이미 완료됨			│		│ [15] 아직 실행 중          │		└──────────┬──────────┘
+						│				└───┬─────────┘		└───┬──────────┘							  ▼
+						│						│									│								┌──────────────────────────┐
+						│						│ 즉시 계속 실행					│ continuation 등록			│ [28] 예외가 현재 try/catch에서 잡히지 않을 수 있음 │
+						│						│									▼								└──────────┬───────────────┘
+            			│						│							┌──────────────────┐					  │
+            			│						│							│ [16] 현재 async 메서드 일시 중단	  │					  │
+            			│						│							│ 상태(StateMachine) 저장			  │					  │
+            			│						│							│ 지역 변수 / 실행(진행) 위치 저장   │					  │
+            			│						│							│ 현재 Thread 반환 가능			  │					  │
+            			│						│							└───┬──────────────┘					  │
+						│						│									│													  │
+						│						│									▼													  │
+            			│						│							┌───────────────┐							  │
+            			│						│							│ [17] await 대상 Task 완료	│							  │
+			            │						│							│ 상태: 완료 / 예외 / 취소     │							  │
+            			│						│							└───┬───────────┘							  │
+						│						│									│													  │
+						│						│									▼													  │
+						│						│							┌─────────────────┐						  │
+						│						│							│ [18] await 이후 코드 실행 예약	│						  │
+						│						│							│ (Continuation Scheduling)		│						  │
+						│						│							└───┬─────────────┘						  │
+						│						│									│													  │
+						│						│					┌───────┴──────────┐							  │
+						│						│					▼									  ▼							  │
+						│						│		┌─────────────────┐	┌───────────────┐		  │
+						│						│		│ [19] SynchronizationContext 복귀 │	│ [20] ThreadPool Thread 재개	│		  │
+						│						│		│								    │	│ 								│		  │
+						│						│		│ - 원래 Context 복귀			    │	│ - 아무 Worker Thread 사용	│		  │
+						│						│		│ - UI/Main Thread 유지		    │	│ - Context 복귀 없음			│		  │
+						│						│		│ - Context가 있으면 기본 복귀     │	│ - ConfigureAwait(false) 주로 │		  │
+						│						│	    └─────┬───────────┘	└────┬──────────┘		  │
+						│						│					└───────┬──────────┘							  │
+						│						│									▼													  │
+						│						│					┌─────────────────┐								  │
+						│						│					│ [21] async StateMachine 복원		│								  │
+						│						│					│ await 시점 상태 복구				│								  │
+						│						│					│ 지역 변수 / 실행 위치 복원		│								  │
+						│						│					└───────┬─────────┘								  │
+						│						└────────────┬────┘												      │
+						│									 			  ▼															  │
+						│									┌────────────────┐										  │
+			 			│									│ [22] await 이후 코드 재개	  │										  │
+						│									│ 메서드 처음부터 아님			  │										  │
+			  			│									│ try/catch 예외 전달 가능		  │										  │
+						│									└──────┬─────────┘										  │
+						│												  ▼															  │
+						│									┌────────────────┐										  │
+			 			│									│ [29] async 메서드 계속 실행	  │ ◄────────────────────┘
+			  			│									│ 다음 await가 있으면 동일 반복  │										  
+						│									└──────┬─────────┘
+						│												  │
+						▼											      ▼
+					┌──────────────┐		┌────────────────┐
+					│[30] 동기 메서드 끝까지 실행│		│ [31] async 메서드 끝까지 실행  │
+					│중간 중단 없음 			  │		│ 모든 await 처리 후 최종 완료	  │
+					└───────┬──────┘  		└──────┬─────────┘
+									└────────┬─────────┘
+													  ▼
+										┌───────────────┐
+										│ [32] 작업 완료               │
+										│ 상태 변경                    │
+										│ - RanToCompletion            │
+										│ - Faulted                    │
+										│ - Canceled                   │
+										└──────┬────────┘
+													  ▼
+										┌──────────────────────────┐
+										│ [33] Thread 반환 / 재사용						  │
+										│ - 동기 메서드: 작업 종료 후 반환					  │
+										│ - async 메서드: await 중단시 이미 반환될 수 있음   │
+			                            │ - await 이후 재개 Thread도 작업 종료 후 반환		  │
+										└──────┬───────────────────┘
+													  ▼
+										┌───────────────────────────────┐
+										│ [34] Task 객체 유지											│
+										│ - 완료 후에도 참조가 있으면 유지								│
+										│ - 참조가 없으면 GC 대상										│
+										│ - Scheduler/Queue에서 제거되었다고 즉시 제거되는 것은 아님	│
+										└───────────────────────────────┘
+
+
+					[ 구성 요소 역할 ]
+
+						Task
+							- 비동기 작업(작업 단위)을 표현하는 객체
+							- 실행할 메서드, 상태(Status), 결과(Result), 예외(Exception) 등을 관리
+							- 실제 코드를 실행하는 주체가 아님
+							- Worker Thread를 직접 소유하지 않음
+
+						TaskScheduler
+							- Task 실행을 예약(Scheduling)하는 구성 요소
+							- Task를 어떤 방식으로 실행할지 결정
+							- 기본 Scheduler는 ThreadPool 기반으로 동작
+							- Task를 ThreadPool Queue에 등록하여 실행을 요청
+
+						ThreadPool
+							- Worker Thread를 생성 및 관리
+							- Worker Thread를 재사용하여 Thread 생성 비용 감소
+							- 실행 대기 중인 작업 Queue를 관리
+							- 사용 가능한 Worker Thread를 Task 실행에 할당
+
+						Worker Thread
+							- 실제 사용자 코드를 실행하는 Thread
+							- Task를 실행하기 위해 ThreadPool에서 제공됨
+							- 작업 완료 후 제거되지 않고 ThreadPool로 반환되어 재사용됨
+
+
+					[ 핵심 처리 흐름 요약 ]
+
+						new Task(...)
+							= Task 객체만 생성
+							= 상태 : Created
+							= 아직 실행되지 않음
+							= TaskScheduler에 등록되지 않음
+							= ThreadPool Queue에 등록되지 않음
+							= Worker Thread 할당 없음
+
+						task.Start()
+							= TaskScheduler에 실행 요청
+							= TaskScheduler가 실행 예약
+							= ThreadPool Queue 등록
+							= 상태 : WaitingToRun
+
+						Task.Run(...)
+							= Task 객체 생성
+							= 즉시 TaskScheduler에 실행 요청
+							= ThreadPool Queue 등록
+							= 상태 : WaitingToRun 또는 Running
+							= 별도의 Start() 호출 불필요
+
+						Worker Thread가 Task 획득
+							= ThreadPool Queue에서 Task 가져옴
+							= Queue에서 Task 제거
+							= Worker Thread 할당
+							= 상태 : Running
+							= 사용자 코드 실행 시작
+
+						동기 메서드 실행
+							= Worker Thread가 메서드를 처음부터 끝까지 실행
+							= 중간 중단 없음
+							= 작업 완료 시 Task 종료
+
+						async 메서드 실행
+							= await 이전까지는 일반 메서드처럼 실행
+
+							await 대상 Task가 이미 완료된 경우
+								→ 즉시 다음 코드 실행
+
+							await 대상 Task가 아직 실행 중인 경우
+								→ 현재 async 메서드 일시 중단
+								→ StateMachine 상태 저장
+								→ 현재 Thread 반환 가능
+								→ await 대상 Task 완료 대기
+
+							await 대상 Task 완료 후
+								→ Continuation 실행 예약
+								→ Context 복귀 또는 ThreadPool 재개
+								→ StateMachine 복원
+								→ await 이후 코드부터 실행 재개
+
+						await 없이 async 메서드 호출
+							= Task 객체만 반환받음
+							= 현재 메서드는 대기하지 않음
+							= 다음 코드 즉시 실행
+
+							호출한 async 메서드는
+							독립적으로 계속 실행됨
+
+							(Fire-and-Forget 형태)
+
+						Task 실행 완료
+							= 상태 변경
+
+							RanToCompletion
+								정상 완료
+
+							Faulted
+								예외 발생
+
+							Canceled
+								취소됨
+
+						Thread 반환
+							= Worker Thread가 제거되는 것이 아님
+							= ThreadPool 내부로 복귀
+							= 이후 다른 Task 실행에 재사용
+			
+						Task 객체 수명							
+							= Task 완료와 객체 제거는 별개
+
+							Task 완료 후에도
+							참조가 남아 있으면 계속 유지
+
+							Scheduler 또는 Queue에서 제거되었다고
+							즉시 메모리에서 제거되는 것은 아님
+
+							참조가 없어지면
+							GC 대상이 되어 정리됨
+
+
+					📚 한 줄 요약
+
+						Task 생성
+						→ TaskScheduler 등록
+						→ ThreadPool Queue 등록
+						→ Worker Thread 할당
+						→ 사용자 코드 실행
+						→ (필요 시 await 일시 중단 및 재개)
+						→ Task 완료
+						→ ThreadPool로 Thread 반환
+						→ Task 객체는 참조가 없어질 때 GC 대상
+            */
+
+            //-------------------------------------------------------------------------------------
+            // Task.Factory.StartNew()
+            //   - Task 생성과 동시에 실행
+            //-------------------------------------------------------------------------------------
             {
-                // Task.Factory를 이용하여 쓰레드 생성과 시작
+                // object 파라미터 전달
                 Task.Factory.StartNew(new Action<object>(Run), null);
+
+                // 문자열 파라미터 전달
                 Task.Factory.StartNew(new Action<object>(Run), "1st");
+
+                // 메서드 그룹 방식 사용
                 Task.Factory.StartNew(Run, "2nd");
 
                 Console.ReadLine();
             }
 
-            /*
-                위의 Task.Factory.StartNew()는 쓰레드를 생성과 동시에 시작하는 방식이고,
-                만약 시작을 하지 않고 Task 객체만을 먼저 만들기 위해서는
-                Task 클래스 생성자를 사용하여 메서드 델리게이트를 지정, Task 객체만을 생성한다.
-                생성된 Task 객체로부터 실제 쓰레드를 시작하기 위해서는 Start() 메서드를 호출하고,
-                종료때까지 기다리기 위해선 Wait() 메서드를 호출한다. 
-            */
+            //-------------------------------------------------------------------------------------
+            // Task 생성자를 이용한 방식
+            //   - Task 객체만 생성
+            //   - Start() 호출시 실행
+            //-------------------------------------------------------------------------------------
             {
-                // Task 생성자에 Run을 지정 Task 객체 생성
+                // Task 생성자에 람다(Run)를 지정하여 Task 객체 생성
                 var t1 = new Task(new Action(Run));
 
-                // 람다식을 이용 Task객체 생성
+                // 람다식을 이용 Task 객체 생성
                 var t2 = new Task(() =>
                 {
                     Console.WriteLine("Long query");
@@ -105,12 +525,83 @@ namespace MultiThread
 
 		static void Task_with_TaskCreationOptions()
 		{
-			/*
-				TaskCreationOptions.DenyChildAttach
-				: 자식 Task 가 존재할 경우 자식 Task 의 종료 후 현재 Task 종료를 기다린다 !!!
-			*/
-			{
-				var parentTask = Task.Run(() =>
+            /*
+                📚 TaskCreationOptions 정리
+
+                  1. 개요
+                    - TaskCreationOptions는 Task 생성 시 실행 방식에 대한 힌트 또는 옵션을 지정한다.
+                    - 대표 옵션:
+                      - DenyChildAttach
+                      - AttachedToParent
+                      - LongRunning
+
+                  2. DenyChildAttach
+                    - 현재 Task에 자식 Task가 연결되는 것을 막는 옵션이다.
+                    - 주의: 자식 Task에 DenyChildAttach를 지정하는 것이 아니라,
+                      부모 Task에 지정되어야 자식 Task의 AttachedToParent 연결을 막는다.
+                    - Task.Run(...)은 내부적으로 DenyChildAttach 성격을 가지므로,
+                      그 안에서 AttachedToParent Task를 만들어도 부모에 연결되지 않을 수 있다.
+
+                    정리:
+                      - 부모 Task가 DenyChildAttach 상태
+                        → 자식 Task는 AttachedToParent를 사용해도 부모에 붙지 않음
+                        → 부모는 자식 종료를 기다리지 않음
+
+                  3. AttachedToParent
+                    - 자식 Task를 부모 Task에 연결하는 옵션이다.
+                    - 부모 Task는 연결된 자식 Task가 모두 끝날 때까지 완료 상태가 되지 않는다.
+                    - 즉, parentTask.Wait()는 부모 코드뿐 아니라 연결된 자식 Task 완료까지 기다린다.
+
+                    정리:
+                      - 자식 Task에 AttachedToParent 지정
+                      - 부모 Task가 DenyChildAttach 상태가 아니어야 함
+                      - 부모 Task는 자식 Task 완료까지 대기
+
+                  4. LongRunning
+                    - 오래 실행되는 작업임을 TaskScheduler에 알려주는 옵션이다.
+                    - 기본 TaskScheduler에서는 보통 ThreadPool이 아닌 별도 Thread 생성을 유도한다.
+                    - ThreadPool 스레드를 장시간 점유하지 않도록 할 때 사용한다.
+                    - 단, 반드시 항상 새 Thread를 만든다고 보장하는 옵션은 아니며,
+                      Scheduler 구현에 따라 동작이 달라질 수 있다.
+
+                  5. 현재 코드 기준 주의점
+                    - Task.Run(...)은 부모 Task에 DenyChildAttach가 적용된 형태로 동작한다.
+                    - 따라서 Task.Run 내부에서 AttachedToParent를 사용해도
+                      자식 Task가 부모에 붙지 않을 수 있다.
+                    - AttachedToParent 동작을 확인하려면 Task.Factory.StartNew(...)를 사용하는 것이 더 명확하다.
+                    - DenyChildAttach는 자식 Task에 지정하는 옵션이 아니라,
+                      부모가 자식 연결을 거부하는 옵션으로 이해해야 한다.
+                    - LongRunning Task 안의 while(true)는 Thread를 계속 점유하므로 테스트 목적 외에는 위험하다.
+
+                  6. 예상 실행 결과
+
+                    DenyChildAttach 또는 일반 자식 Task
+                      - 부모 Task는 자식 Task 종료를 기다리지 않는다.
+                      - parentTask.Wait() 이후 바로 "Main thread finished."가 출력될 수 있다.
+                      - 자식 Task 출력은 나중에 출력될 수 있다.
+
+                    AttachedToParent
+                      - 부모 Task가 자식 Task 완료까지 기다린다.
+                      - parentTask.Wait()는 자식 Task가 끝난 뒤 반환된다.
+                      - "Child task finished !!!" 출력 후 "Main thread finished."가 출력된다.
+
+                    LongRunning
+                      - 장시간 실행 작업을 별도 Thread에서 실행하도록 유도한다.
+                      - ThreadPool의 일반 Worker Thread 고갈을 줄이는 데 사용할 수 있다.
+            */
+
+            //-------------------------------------------------------------------------------------
+            // TaskCreationOptions.DenyChildAttach
+            //  : 부모 Task가 자식 Task의 Attach(연결)를 허용하지 않는 옵션
+            //
+            //  - 자식 Task가 AttachedToParent 옵션을 사용하더라도
+            //    현재 부모 Task에는 연결되지 않는다.
+            //  - 부모 Task는 자식 Task 종료를 기다리지 않는다.
+            //  - parentTask.Wait()는 부모 Task 작업만 완료되면 반환된다.
+            //  - 자식 Task는 독립적으로 계속 실행될 수 있다.
+            //-------------------------------------------------------------------------------------
+            {
+                var parentTask = Task.Run(() =>
 				{
 					var childTask = new Task(() =>
 					{
@@ -126,38 +617,74 @@ namespace MultiThread
 
 				parentTask.Wait();
 				Console.WriteLine("Main thread finished.");
-			}
 
-			/*
-				TaskCreationOptions.AttachedToParent
-				: 자식 Task 가 존재할 경우 현재(부모) Task 종료 후 자식 Task 가 종료 된다 !!!
-			*/
-			{
-				var parentTask = Task.Run(() =>
-				{
-					var childTask = new Task(() =>
-					{
-						System.Threading.Thread.Sleep(10000);
-						Console.WriteLine("Child task finished !!!");
+                /*
+					Parent task finished.
+					Main thread finished.
+					Child task finished !!!
 
-					}, TaskCreationOptions.AttachedToParent);
+					- parentTask.Wait()는 childTask를 기다리지 않는다.
+					- childTask는 부모 Task와 분리되어 실행된다.
+					- 따라서 Main thread finished.가 먼저 출력될 수 있다.
+				*/
+            }
 
-					childTask.Start();
+            //-------------------------------------------------------------------------------------
+            // TaskCreationOptions.AttachedToParent
+            //  : 현재 Task를 부모 Task에 연결(Attach)하는 옵션
+            //
+            //  - 부모 Task는 연결된 자식 Task가 모두 종료될 때까지 완료되지 않는다.
+            //  - parentTask.Wait()는 자식 Task 종료까지 함께 대기한다.
+            //  - 부모/자식 Task를 하나의 작업 그룹처럼 동작시키고 싶을 때 사용한다.
+            //  - 단, 부모 Task가 DenyChildAttach 상태이면 연결되지 않는다.
+            //-------------------------------------------------------------------------------------
+            {
+                var parentTask = Task.Factory.StartNew(() =>
+                {
+                    var childTask = new Task(() =>
+                    {
+                        System.Threading.Thread.Sleep(10000);
+                        Console.WriteLine("Child task finished !!!");
 
-					Console.WriteLine("Parent task finished.");
-				});
+                    }, TaskCreationOptions.AttachedToParent);
 
-				parentTask.Wait();
+                    childTask.Start();
+
+                    Console.WriteLine("Parent task finished.");
+                });
+
+                parentTask.Wait();
 				Console.WriteLine("Main thread finished.");
-			}
 
-			/*
-				TaskCreationOptions.LongRunning
-				: ThreadPool 에서 분리되어 사용할 수 있도록 해주는 설정 이다.
-				: ThreadPool 에 설정된 스레드를 초과하여 스레드를 생성 한다.
-			*/
-			{
-				System.Threading.ThreadPool.SetMinThreads(1, 1);
+                /*
+					Parent task finished.
+					Child task finished !!!
+					Main thread finished.
+
+					- childTask는 AttachedToParent 옵션으로 생성되었다.
+					- 따라서 childTask는 parentTask에 연결(Attach)된다.
+					- parentTask는 childTask가 종료될 때까지 완료 상태가 되지 않는다.
+					- 결과적으로 parentTask.Wait()는 childTask 종료까지 대기한다.
+				*/
+            }
+
+            //-------------------------------------------------------------------------------------
+            // TaskCreationOptions.LongRunning
+            //  : 오래 실행되는 작업(Long Running Task)임을 Scheduler에 알리는 옵션
+            //
+            //  - 기본 ThreadPool Worker Thread를 장시간 점유하지 않도록 하기 위해 사용한다.
+            //  - 일반적으로 별도의 전용 Thread 생성을 유도한다.
+            //  - ThreadPool Queue 기반 실행 대신 독립 Thread 방식으로 동작할 수 있다.
+            //  - ThreadPool 최대 Worker Thread 수와 별도로 Thread가 생성될 수 있다.
+            //  - 장시간 실행 작업, 무한 루프, 지속 실행 서비스 등에 사용한다.
+            //
+            //  ※ 주의
+            //    - 반드시 항상 새 Thread를 생성한다고 보장되지는 않는다.
+            //    - 실제 동작은 TaskScheduler 구현에 따라 달라질 수 있다.
+            //    - 과도하게 사용하면 Thread 생성 비용 및 Context Switching 비용이 증가할 수 있다.
+            //-------------------------------------------------------------------------------------
+            {
+                System.Threading.ThreadPool.SetMinThreads(1, 1);
 				System.Threading.ThreadPool.SetMaxThreads(5, 1);
 
 				for(var i = 0; i < 5; i++)
@@ -177,17 +704,34 @@ namespace MultiThread
 					Console.WriteLine($"CurrThreadCount:{Process.GetCurrentProcess().Threads.Count}");
 				}
 
-				System.Threading.ThreadPool.QueueUserWorkItem(doThread4TaskCreationOptions); // 스레드를 생성하고 새로 추가 한다. (1개)
-				System.Threading.ThreadPool.QueueUserWorkItem(doThread4TaskCreationOptions); // 스레드를 생성하고 새로 추가 한다. (2개)
+				System.Threading.ThreadPool.QueueUserWorkItem(doThread4TaskCreationOptions); // 스레드를 생성하고 새로 추가 한다. (1개추가)
+				System.Threading.ThreadPool.QueueUserWorkItem(doThread4TaskCreationOptions); // 스레드를 생성하고 새로 추가 한다. (1개추가)
 
-				//var added_task_1 = Task.Factory.StartNew( doThread4TaskCreationOptions
-				//							              , TaskCreationOptions.LongRunning ); // 스레드를 생성하고 새로 추가 한다. (1개)
+                var added_task_1 = Task.Factory.StartNew( doThread4TaskCreationOptions
+				  						                , TaskCreationOptions.LongRunning ); // 스레드를 생성하고 새로 추가 한다. (1개추가)
 
-				//var added_task_2 = Task.Factory.StartNew(doThread4TaskCreationOptions
-				//									      , TaskCreationOptions.LongRunning ); // 위에 생성했던 스레드가 다시 호출된다.
-			}
+                var added_task_2 = Task.Factory.StartNew(doThread4TaskCreationOptions
+													    , TaskCreationOptions.LongRunning ); // 위에 생성했던 스레드가 다시 호출될 수 있다.
 
-			Console.ReadLine();
+                /*
+					called ChildTask !!! - TID:7
+					CurrThreadCount:18
+					called ChildTask !!! - TID:8
+					CurrThreadCount:19
+					called ChildTask !!! - TID:9
+					CurrThreadCount:20
+					called ChildTask !!! - TID:10
+					CurrThreadCount:21
+					called ChildTask !!! - TID:11
+					CurrThreadCount:22
+					called ThreadFunc !!! - TID:4
+					called ThreadFunc !!! - TID:3
+					called ThreadFunc !!! - TID:5
+					called ThreadFunc !!! - TID:4 <= 이미 생성한 TID:4 스레드에 의해 함수가 호출되었다 !!!
+				*/
+            }
+
+            Console.ReadLine();
 		}
 
 		static async Task startEventTimer(Int32 intervalMS)
@@ -2150,7 +2694,7 @@ namespace MultiThread
 
 			//Task_StartNew_vs_Run();
 
-			//Task_StartNew_with_ThreadPool();
+			Task_StartNew_with_ThreadPool();
 
 			//Task_with_TaskCreationOptions();
 

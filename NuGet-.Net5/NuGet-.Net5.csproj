@@ -12,6 +12,12 @@
     <Folder Include="Json\" />
     <Folder Include="Configuration\" />
     <Folder Include="AutoMapper\" />
+    <Folder Include="DotNext\" />
+    <Folder Include="MS.VisualStudio.Threading\" />
   </ItemGroup>
+
+  <ItemGroup>
+	<PackageReference Include="AutoMapper" VersionOverride="16.1.1" />
+  </ItemGroup>	
 
 </Project>
