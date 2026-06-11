@@ -73,8 +73,8 @@ namespace CSharp
             //MultiThread.SemaphoreSlim.Test();
             //MultiThread.TaskCompletionSourceExample.Test();
             //MultiThread.TaskScheduler.Test();
-            //MultiThread.Tasking.Test();
-            MultiThread.TaskFlowExample.Test();
+            MultiThread.Tasking.Test();
+            //MultiThread.TaskFlowExample.Test();
             //MultiThread.Thread.Test();
             //MultiThread.ThreadPool.Test();
             //MultiThread.ThreadSynchronization.Test();
@@ -91,6 +91,7 @@ namespace CSharp
             //AdvancedStep.BlockingCollection.Test();
             //AdvancedStep.ClassInheritance.Test();
             //AdvancedStep.Delegate.Test();
+            //AdvancedStep.DeepCopy.Test();
             //AdvancedStep.DictionaryInitializer.Test();
             //AdvancedStep.Dynamic.Test();
             //AdvancedStep.ExtensionMethod.Test();

@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 
 
 using CSharp;
@@ -1291,98 +1292,149 @@ namespace MultiThread
 
 		static void Task_with_ContinueWith()
 		{
-			/*
-				앞에서 이야기 하였듯이 await는 해당 Task가 끝난 후 await 문장이 있었던 곳으로부터 계속 다음 문장들을 실행하도록 되어있다.
-				이러한 기능은 .NET 4.0에서 소개 되었던 Task클래스의 ContinueWith()를 써서 아래와 같이 구현될 수 있다.
-				물론 C# 5.0 컴파일러가 await를 이렇게 변경한다는 것은 아니지만, 개념적으로 동일한 방식이라 볼 수 있다.
+            /*
+                📚 ContinueWith 개요
 
-				아래 예제에서 ContinueWith() 메서드는 첫번째 파라미터에서 task1 이 끝난 후 실행될 명령들을 람다식으로 지정하고 있다.
-				그리고 두번째 파라미터에는 실행블럭이 현재 쓰레드 (예제의 경우 UI Thread)에서 실행하도록
-				TaskScheduler.FromCurrentSynchronizationContext()를 지정하고 있다.
-				즉, 개념적으로 await는 특정 Task가 실행된 후 이러 이러한 실행블럭을 현재 실행 (쓰레드) 컨텍스트에서 실행하도록 하는 것이다.
-			    그리고 ContinueWith() 는 원본 Task의 작업 종료 여부에 상관없이 Thread Pool 로부터 할당받은 스레드에 의해서 실행 된다.
+                ContinueWith는 어떤 Task가 완료된 후 실행할 후속 작업을 등록하는 메서드이다.
 
-					private async void Run2()
-					{    
-						var task = Task<int>.Run(() => LongCalc2(10));
+                    task.ContinueWith(t =>
+                    {
+                        // task 완료 후 실행
+                    });
 
-						// await task 과 동일한 효과
-						//
-						task1.ContinueWith( x =>
-						{
-							this.label1.Text = "Sum = " + task1.Result;
-							this.button1.Enabled = true;      
-						}, TaskScheduler.FromCurrentSynchronizationContext());
-					}
-			*/
-			{
-				Task<int> task = new Task<int>(() =>
-				{
-					writeLog("TEST-0");
-					Task.Delay(5000);
-					return 1;
-				});
+                await와 개념적으로 비슷하게 볼 수 있지만 완전히 같지는 않다.
 
-				task.Start();
+                    await task;
+                    다음 코드 실행
 
-				// task 에 연속적으로 처리할 수 있도록 등록 한다. (실행 순서까지 보장 하지는 않는다 !!!)
-				task.ContinueWith((arg) =>
-				{
-					writeLog("TEST-1");
-				});
+                위 코드는 개념적으로는 다음과 비슷하다.
 
-				task.ContinueWith((arg) =>
-				{
-					writeLog("TEST-2");
-				});
+                    task.ContinueWith(t =>
+                    {
+                        다음 코드 실행
+                    });
 
-				Console.ReadLine();
-			}
+                하지만 await는 SynchronizationContext를 캡처하여,
+                UI 애플리케이션에서는 기본적으로 await 이후 코드를 UI 스레드에서 계속 실행한다.
 
-			{
-				Task<int> task = new Task<int>(() =>
-				{
-					writeLog("TEST-0");
-					Task.Delay(5000);
-					return 1;
-				});
+                ContinueWith에서 UI 스레드로 돌아오려면 명시적으로 Scheduler를 지정해야 한다.
 
-				task.Start();
-				Task.Delay(6000); // await 설정이 없기 때문에 Caller 스레드가 바로 아래 로직도 수행 한다. !!!
+                    task.ContinueWith(t =>
+                    {
+                        label1.Text = "완료";
+                    }, TaskScheduler.FromCurrentSynchronizationContext());
 
-				task.ContinueWith((arg) =>
-				{
-					writeLog("TEST-1");
-				});
+                주의할 점
 
-				Console.ReadLine();
-			}
+                1. ContinueWith는 원본 Task가 완료된 후 실행된다.
 
-			{
-				Task<int> task = new Task<int>(() =>
-				{
-					writeLog("TEST-0");
-					Task.Delay(5000);
-					return 1;
-				});
+                2. 여러 개의 ContinueWith를 같은 Task에 등록할 수 있다.
 
-				task.Start();
+                3. 같은 Task에 여러 ContinueWith를 등록해도 실행 순서는 보장되지 않는다.
 
-				task.ContinueWith((arg) =>
-				{
-					writeLog("TEST-1");
-				});
+                4. 기본 ContinueWith는 보통 ThreadPool에서 실행된다.
 
-				System.Threading.Thread.Sleep(6000); // Thread.Sleep() 은 블로킹 함수 이므로 지연 시간 까지 대기 한다.
+                5. Task.Delay(...)만 호출하면 대기하지 않는다.
+                   반드시 await, Wait(), Result 등을 사용해야 실제로 기다린다.
 
-				task.ContinueWith((arg) =>
-				{
-					writeLog("TEST-2");
-				});
+                6. Thread.Sleep(...)은 현재 스레드를 블로킹한다.
+            */
 
-				Console.ReadLine();
-			}
-		}
+            {
+                writeLog("=== 예제 1: 하나의 Task에 여러 ContinueWith 등록 ===");
+
+                Task<int> task = Task.Run(async () =>
+                {
+                    writeLog("TEST-0");
+
+                    await Task.Delay(5000).ConfigureAwait(false);
+
+                    return 1;
+                });
+
+                task.ContinueWith(t =>
+                {
+                    writeLog("TEST-1");
+                });
+
+                task.ContinueWith(t =>
+                {
+                    writeLog("TEST-2");
+                });
+
+                /*
+                    TEST-1, TEST-2는 모두 task가 완료된 후 실행된다.
+                    하지만 TEST-1이 먼저 실행된다는 보장은 없다.
+                */
+
+                Console.ReadLine();
+            }
+
+            {
+                writeLog("=== 예제 2: Task.Delay만 호출하면 대기하지 않음 ===");
+
+                Task<int> task = Task.Run(async () =>
+                {
+                    writeLog("TEST-0");
+
+                    await Task.Delay(5000).ConfigureAwait(false);
+
+                    return 1;
+                });
+
+                Task.Delay(6000);
+
+                /*
+                    위 코드는 기다리지 않는다.
+                    Task.Delay(6000)은 Task를 생성할 뿐,
+                    await 또는 Wait을 하지 않으면 즉시 다음 줄로 넘어간다.
+                */
+
+                task.ContinueWith(t =>
+                {
+                    writeLog("TEST-1");
+                });
+
+                Console.ReadLine();
+            }
+
+            {
+                writeLog("=== 예제 3: Thread.Sleep은 현재 스레드를 블로킹함 ===");
+
+                Task<int> task = Task.Run(async () =>
+                {
+                    writeLog("TEST-0");
+
+                    await Task.Delay(5000).ConfigureAwait(false);
+
+                    return 1;
+                });
+
+                task.ContinueWith(t =>
+                {
+                    writeLog("TEST-1");
+                });
+
+                System.Threading.Thread.Sleep(6000);
+
+                /*
+                    Thread.Sleep(6000)은 현재 스레드를 6초 동안 멈춘다.
+
+                    이 시점에는 task가 이미 완료되었을 가능성이 높다.
+                    따라서 아래 ContinueWith는 이미 완료된 Task에 등록된다.
+
+                    기본 ContinueWith는 ExecuteSynchronously 옵션이 없으므로
+                    보통 ThreadPool에 예약되어 실행된다.
+                */
+
+                task.ContinueWith(t =>
+                {
+                    writeLog("TEST-2");
+                });
+
+                Console.ReadLine();
+            }
+        }
 
 		static async Task completedTask()
 		{
@@ -1397,8 +1449,8 @@ namespace MultiThread
 
         static void Task_with_CompletedTask()
 		{
-			/*
-				즉시 완료 처리를 해도 될때 사용하는 Task  함수 !!!
+            /*
+				📚 즉시 완료 처리를 해도 될때 사용하는 Task  함수 !!!
 
 				| 항목              | Task.FromResult<T>(value)                | Task.CompletedTask                          
 				|-------------------|------------------------------------------|---------------------------------------------
@@ -1411,7 +1463,7 @@ namespace MultiThread
 				| 언제 쓰나         | async 메서드가 값을 돌려줘야 할 때       | async 메서드가 할 일 없고 바로 끝낼 때      
 				| 예시              | return Task.FromResult(42);              | return Task.CompletedTask;                  
 			*/
-			{
+            {
                 completedTask().GetAwaiter();
 
                 var result = completedTaskWithResult().GetAwaiter().GetResult();
@@ -1423,154 +1475,423 @@ namespace MultiThread
 
         static void Task_with_TaskContinuationOptions()
 		{
-			/*
-				System.Threading.Tasks.TaskContinuationOptions 옵션
-									                
-				OnlyOnRanToCompletion :	앞의 태스크가 완료까지 실행된 경우에만 다음 태스크를 스케쥴 한다.
-				OnlyOnFaulted :			앞의 태스크에서 예외가 핸들링 된 경우에만 다음 태스크를 스케줄 한다.
-				OnlyOnCanceled :		앞의 태스크가 취소된 경우에만 다음 태스크를 스케줄 한다.
-			    ExecuteSynchronously :	실행 순서를 동기화 한다.
+            /*
+                📚 System.Threading.Tasks.TaskContinuationOptions 옵션
 
-				작동 원리
-				: Caller 스레드에 의해 Task.ContinueWith() 호출시 코드내에 설정된 TaskContinuationOptions 를 TaskScheduler 에 예약 하고
-			      Callee 스레드가 실행될때 직전 Task 의 완료 결과를 참조 하여 예약된 TaskContinuationOptions 값을 체크 하여
-			      조건에 맞는 Task 를 실행 시킨다 !!!
-			      
-			*/
-			{
-				var task = new Task(() =>
-				{
-					writeLog("TEST-0");
-				});
+                OnlyOnRanToCompletion :
+                    앞의 Task가 예외나 취소 없이 정상 완료(RanToCompletion)된 경우에만
+                    continuation Task를 실행한다.
 
-				task.Start();
+                OnlyOnFaulted :
+                    앞의 Task가 처리되지 않은 예외로 인해 Faulted 상태가 된 경우에만
+                    continuation Task를 실행한다.
 
-				// task 에 연속적으로 처리할 수 있도록 등록 한다. (실행 순서를 보장 한다)
-				task.ContinueWith((arg) =>
-				{
-					writeLog("TEST-1");
-				}, TaskContinuationOptions.ExecuteSynchronously );
+                OnlyOnCanceled :
+                    앞의 Task가 취소되어 Canceled 상태가 된 경우에만
+                    continuation Task를 실행한다.
 
-				task.ContinueWith
-				(				
-					_ => writeLog("TEST-2")
-				,	TaskContinuationOptions.ExecuteSynchronously 
-				);
+                ExecuteSynchronously :
+                    continuation Task를 별도 큐에 넣지 않고,
+                    가능하면 선행 Task를 완료 처리하는 스레드에서 바로 인라인 실행하도록 요청한다.
 
-				Console.ReadLine();
-			}
-			{
-				Console.WriteLine("Start");
+                    단, 항상 같은 스레드에서 즉시 실행되는 것은 아니다.
+                    TaskScheduler 정책, 선행 Task의 완료 시점, continuation 등록 시점에 따라
+                    큐에 들어갈 수도 있고, ContinueWith를 호출한 스레드에서 실행될 수도 있다.
 
-				var task = Task<int>.Factory.StartNew(() => Enumerable.Range(1, 10000).Sum());
-				task.ContinueWith((task1) =>
-				{
-					Console.WriteLine("Success : {0}", task1.Result);
+                작동 원리
+                :
+                    ContinueWith()를 호출하면 continuation Task가 생성된다.
 
-				}, TaskContinuationOptions.OnlyOnRanToCompletion ); // Caller 스레드를 통해 TaskContinuationOptions 이 예약 된다 !!!
-				task.ContinueWith
-				(
-					task1 => Console.WriteLine("Error : {0}", task1.Exception)
-				,	TaskContinuationOptions.OnlyOnFaulted // Caller 스레드를 통해 TaskContinuationOptions 이 예약 된다 !!!
-				);
-				task.ContinueWith
-				(
-					task1 => Console.WriteLine("Task was canceled.")
-				,	TaskContinuationOptions.OnlyOnCanceled // Caller 스레드를 통해 TaskContinuationOptions 이 예약 된다 !!!
-				);
-				Console.WriteLine("End");
+                    선행 Task가 아직 완료되지 않았다면,
+                    continuation은 선행 Task의 continuation 목록에 등록된다.
 
-				System.Threading.Thread.Sleep(1000);
+                    선행 Task가 완료되면,
+                    Task 내부 완료 처리 과정에서 등록된 continuation들의 옵션 조건을 검사한다.
 
-				Console.ReadLine();
-			}
-		}
+                    선행 Task의 상태가 RanToCompletion이면 OnlyOnRanToCompletion 대상이 실행되고,
+                    Faulted이면 OnlyOnFaulted 대상이 실행되고,
+                    Canceled이면 OnlyOnCanceled 대상이 실행된다.
 
-		static void Task_with_ContinueWith_for_thread_switch()
-		{
-			/*
-				var form = new Form();
-				form.Load += async (sender, args) =>
-				{
-					Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
+                    실행 대상이 된 continuation은 지정된 TaskScheduler에 의해 실행된다.
 
-					//ConfigureAwait(false) 으로 설정해도 Task.FromResult() 호출시 현재 스레드를 유지 하게됨.
-					await Task.FromResult(10).ConfigureAwait(false);                    
-					Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
+                    ExecuteSynchronously 옵션이 있으면,
+                    가능하면 선행 Task를 완료 처리하는 스레드에서 인라인 실행된다.
+                    하지만 이것은 강제 보장이 아니라 Scheduler에 대한 실행 힌트에 가깝다.
+            */
+            {
+                /*
+                    TEST-0 실행 후 TEST-1, TEST-2를 순서대로 실행하고 싶다면
+                    ContinueWith()를 각각 task에 붙이면 안 된다.
 
-					//ConfigureAwait(false) 으로 설정하여 다른 스레드로 변경됨.
-					await Task.Delay(1000).ConfigureAwait(false);
-					Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
-				};
-				Application.Run(form);
-			*/
-			/*
-				output:
-					1
-					1
-					5
-			*/
+                    아래처럼 continuation을 체인으로 연결해야 한다.
 
-			{
-				Task<int> task = new Task<int>(() => {
-					writeLog("TEST-0");
-					Task.Delay(5000);
-					return 1;
-				});
+                    실행 흐름:
 
-				task.Start();
+                        task(TEST-0)
+                            -> continuation(TEST-1)
+                                -> continuation(TEST-2)
+                */
+                var task = new Task(() =>
+                {
+                    /*
+                        이 코드는 task.Start() 이후 TaskScheduler에 의해 실행된다.
 
-				task.ContinueWith((arg) => {
-					writeLog("TEST-1"); //task 에 할당된 스레드에 의해 실행
-				}, TaskContinuationOptions.ExecuteSynchronously);
+                        기본적으로 별도 TaskScheduler를 지정하지 않았으므로
+                        TaskScheduler.Default가 사용되고,
+                        실제 실행은 ThreadPool Worker Thread에서 이루어진다.
+                    */
+                    writeLog("TEST-0");
+                });
 
-				writeLog(task.IsCompleted.ToString());
-				Task.Delay(6000); //5000ms 경과되면 task 에서 생성된 스레드는 ThreadPool 에 반환 된다.
-				writeLog(task.IsCompleted.ToString());
 
-				task.ContinueWith((arg) => {
-					writeLog("TEST-2"); //ContinueWith 를 호출한 현재 스레드에 의해 실행
-				}, TaskContinuationOptions.ExecuteSynchronously);
+                /*
+                    task.Start()
 
-				Console.ReadLine();
-			}
+                    Created 상태의 Task를 실행 예약한다.
 
-			{
-				var ui_items = new List<string>();
+                    이 시점에 Task 객체가 TaskScheduler에 전달되고,
+                    기본 Scheduler는 ThreadPool에 작업을 등록한다.
 
-				var task = Task.Factory.StartNew(() =>
-				{
-					//ThreadPool 에서 새로운 스레드를 task에 할당 한다.
-					var items = new List<int>();
-					for (int i = 0; i < 10; i++)
-					{
-						items.Add(i);
-						writeLog($"load value = {i}");
-						Task.Delay(1000);
-					}
+                    즉, Start()를 호출한 스레드가 TEST-0 코드를 직접 실행하는 것이 아니라,
+                    일반적으로 ThreadPool Worker Thread가 TEST-0 코드를 실행한다.
+                */
+                task.Start();
 
-					return items;
-				});
-				writeLog(task.IsCompleted.ToString());
-				Task.Delay(12000); //1초가 경과되면 task 에서 생성된 스레드는 ThreadPool 에 반환 된다.
-				writeLog(task.IsCompleted.ToString());
+                /*
+                    ContinueWith()
 
-				task.ContinueWith( x => 
-				{
-					foreach(var data in x.Result)
-					{
-						var item = $"value to ui = {data}";
-						ui_items.Add(item);
+                    선행 Task인 task가 완료된 후 실행할 continuation Task를 등록한다.
 
-						writeLog(item); //ThreadPool 에 반환된 task 스레드에 의해 실행
-					}
-				}, System.Threading.Tasks.TaskScheduler.Current );
+                    여기서는 첫 번째 ContinueWith()의 반환값에 다시 ContinueWith()를 붙이고 있다.
 
-				Console.ReadLine();
-			}
-		}
+                    따라서 구조는 다음과 같다.
 
-		static async Task Task_with_TaskAwaiter()
+                        task
+                          -> TEST-1 continuation
+                              -> TEST-2 continuation
+
+                    이 구조에서는 TEST-1이 끝난 후 TEST-2가 실행되므로
+                    TEST-1, TEST-2의 실행 순서가 보장된다.
+
+                    ExecuteSynchronously
+
+                    continuation을 가능하면 선행 Task를 완료 처리하는 스레드에서
+                    바로 인라인 실행하도록 요청한다.
+
+                    단, 항상 같은 스레드에서 실행된다는 보장은 없다.
+                    TaskScheduler 정책이나 실행 타이밍에 따라 달라질 수 있다.
+                */
+                task
+                    .ContinueWith(_ =>
+                    {
+                        /*
+                            previousTask는 선행 Task, 즉 TEST-0을 실행한 task다.
+
+                            이 continuation은 task가 완료된 후 실행된다.
+
+                            ExecuteSynchronously가 지정되어 있으므로,
+                            가능하면 TEST-0을 완료 처리한 스레드에서
+                            곧바로 이어서 실행될 수 있다.
+                        */
+                        writeLog("TEST-1");
+                    }, TaskContinuationOptions.ExecuteSynchronously)
+                    .ContinueWith(_ =>
+                    {
+                        /*
+                            previousTask는 바로 앞 continuation,
+                            즉 TEST-1을 실행한 Task다.
+
+                            따라서 이 코드는 TEST-1이 완료된 후 실행된다.
+
+                            이 구조에서는 TEST-2가 TEST-1보다 먼저 실행될 수 없다.
+                        */
+                        writeLog("TEST-2");
+                    }, TaskContinuationOptions.ExecuteSynchronously);
+
+                Console.ReadLine();
+            }
+
+            {
+                /*
+                    하나의 선행 Task에 대해
+                    정상 완료, 예외 발생, 취소 상태별로 서로 다른 continuation을 등록하는 예제다.
+
+                    실행 흐름:
+
+                        task
+                         ├─ OnlyOnRanToCompletion
+                         ├─ OnlyOnFaulted
+                         └─ OnlyOnCanceled
+
+                    이 세 continuation은 모두 같은 선행 Task에 붙어 있다.
+
+                    선행 Task의 최종 상태에 따라
+                    세 개 중 조건에 맞는 continuation만 실행된다.
+                */
+                Console.WriteLine("Start");
+
+                /*
+                    Task.Run()
+
+                    ThreadPool에서 실행할 비동기 작업을 예약한다.
+
+                    여기서는 1부터 10000까지의 합계를 계산하고,
+                    결과를 int로 반환하는 Task<int>를 생성한다.
+
+                    정상적으로 계산이 끝나면 task의 상태는 RanToCompletion이 된다.
+                    예외가 발생하면 Faulted가 된다.
+                    취소가 발생하면 Canceled가 된다.
+                */
+                var task = Task.Run(() => Enumerable.Range(1, 10000).Sum());
+
+                /*
+                    정상 완료 continuation
+
+                    선행 Task가 RanToCompletion 상태가 된 경우에만 실행된다.
+
+                    이 continuation 안에서는 task1.Result를 안전하게 읽을 수 있다.
+                    왜냐하면 OnlyOnRanToCompletion 조건 때문에
+                    이 코드가 실행될 때는 이미 정상 결과가 존재하기 때문이다.
+                */
+                task.ContinueWith(task1 =>
+                {
+                    Console.WriteLine("Success : {0}", task1.Result);
+
+                }, TaskContinuationOptions.OnlyOnRanToCompletion);
+
+                /*
+                    예외 발생 continuation
+
+                    선행 Task가 Faulted 상태가 된 경우에만 실행된다.
+
+                    주의:
+                        OnlyOnFaulted는 "예외가 catch된 경우"가 아니다.
+
+                        선행 Task 내부에서 예외가 처리되지 않고 밖으로 전파되어
+                        Task가 Faulted 상태가 되었을 때 실행된다.
+
+                    task1.Exception은 AggregateException 타입이다.
+                    실제 원인 예외 메시지를 보려면 GetBaseException() 또는 InnerException을 확인하는 것이 좋다.
+                */
+                task.ContinueWith(task1 =>
+                {
+                    Console.WriteLine("Error : {0}", task1.Exception?.GetBaseException().Message);
+
+                }, TaskContinuationOptions.OnlyOnFaulted);
+
+                /*
+                    취소 continuation
+
+                    선행 Task가 Canceled 상태가 된 경우에만 실행된다.
+
+                    단순히 예외가 발생했다고 Canceled가 되는 것은 아니다.
+
+                    보통 CancellationToken을 사용하고,
+                    해당 Token과 연결된 OperationCanceledException이 발생해야
+                    Task가 Canceled 상태로 전환된다.
+                */
+                task.ContinueWith(task1 =>
+                {
+                    Console.WriteLine("Task was canceled.");
+
+                }, TaskContinuationOptions.OnlyOnCanceled);
+
+                /*
+                    여기서 "End"는 위 continuation들이 끝난 뒤 출력되는 것이 아니다.
+
+                    ContinueWith()는 continuation을 등록하고 바로 반환한다.
+
+                    따라서 보통 출력 순서는 다음처럼 나올 수 있다.
+
+                        Start
+                        End
+                        Success : 50005000
+
+                    즉, End가 먼저 출력될 수 있다.
+                */
+                Console.WriteLine("End");
+
+                System.Threading.Thread.Sleep(1000);
+
+                Console.ReadLine();
+            }
+        }
+
+        //=========================================================================================
+
+        static void writeLogWithTime(string message)
+        {
+            Console.WriteLine(
+                $"[{DateTime.Now:HH:mm:ss.fff}] " +
+                $"Thread={System.Threading.Thread.CurrentThread.ManagedThreadId}, " +
+                $"{message}");
+        }
+
+        static void ExecuteSynchronously_BeforeTaskCompleted()
+        {
+            writeLogWithTime("=== Example 1: 완료 전에 ContinueWith 등록 ===");
+
+            var task = Task.Run(async () =>
+            {
+                writeLogWithTime("Task 시작");
+
+                await Task.Delay(1000).ConfigureAwait(false);
+
+                writeLogWithTime("Task 완료 직전");
+                return 1;
+            });
+
+            task.ContinueWith(t =>
+            {
+                // ExecuteSynchronously:
+                // 선행 Task가 완료되는 시점의 스레드에서 continuation이 바로 실행될 수 있다.
+                // 단, 항상 같은 스레드라고 보장되는 것은 아니다.
+                writeLogWithTime($"Continuation 실행, Result={t.Result}");
+
+            }, TaskContinuationOptions.ExecuteSynchronously);
+
+            task.Wait();
+
+            writeLogWithTime("Example 1 종료");
+        }
+
+        static void ExecuteSynchronously_AfterTaskCompleted()
+        {
+            writeLogWithTime("=== Example 2: 완료 후 ContinueWith 등록 ===");
+
+            var task = Task.Run(() =>
+            {
+                writeLogWithTime("Task 실행");
+                return 10;
+            });
+
+            task.Wait();
+
+            writeLogWithTime("Task는 이미 완료됨");
+
+            task.ContinueWith(t =>
+            {
+                // 이미 완료된 Task에 ExecuteSynchronously를 사용하면
+                // ContinueWith를 호출한 현재 스레드에서 바로 실행될 가능성이 높다.
+                writeLogWithTime($"Continuation 실행, Result={t.Result}");
+
+            }, TaskContinuationOptions.ExecuteSynchronously);
+
+            writeLogWithTime("Example 2 종료");
+        }
+
+        static void TaskScheduler_Current()
+        {
+            writeLogWithTime("=== Example 3: TaskScheduler.Current ===");
+
+            var task = Task.Run(async () =>
+            {
+                var items = new List<int>();
+
+                for (int i = 0; i < 5; i++)
+                {
+                    items.Add(i);
+                    writeLogWithTime($"load value = {i}");
+
+                    await Task.Delay(500).ConfigureAwait(false);
+                }
+
+                return items;
+            });
+
+            writeLogWithTime($"TaskScheduler.Current = {System.Threading.Tasks.TaskScheduler.Current}");
+
+            task.ContinueWith(t =>
+            {
+                // 콘솔 앱의 일반 스레드에서 TaskScheduler.Current는 보통 TaskScheduler.Default이다.
+                // 즉, continuation은 ThreadPool에서 실행된다.
+                foreach (var data in t.Result)
+                {
+                    writeLogWithTime($"value processed = {data}");
+                }
+
+            }, System.Threading.Tasks.TaskScheduler.Current);
+
+            task.Wait();
+
+            writeLogWithTime("Example 3 종료");
+        }
+
+        static void UI_ThreadScheduler()
+        {
+            writeLogWithTime("=== Example 4: UI 스레드로 continuation 전환 ===");
+
+            var form = new Form
+            {
+                Text = "ContinueWith UI Scheduler Example",
+                Width = 500,
+                Height = 300
+            };
+
+            var listBox = new ListBox
+            {
+                Dock = DockStyle.Fill
+            };
+
+            form.Controls.Add(listBox);
+
+            form.Load += (sender, args) =>
+            {
+                writeLogWithTime("Form.Load");
+
+                var uiScheduler = System.Threading.Tasks.TaskScheduler.FromCurrentSynchronizationContext();
+
+                var task = Task.Run(async () =>
+                {
+                    // 이 코드는 ThreadPool에서 실행된다.
+                    var items = new List<int>();
+
+                    for (int i = 0; i < 5; i++)
+                    {
+                        items.Add(i);
+                        writeLogWithTime($"load value = {i}");
+
+                        await Task.Delay(500).ConfigureAwait(false);
+                    }
+
+                    return items;
+                });
+
+                task.ContinueWith(t =>
+                {
+                    // 이 코드는 UI 스레드에서 실행된다.
+                    foreach (var data in t.Result)
+                    {
+                        var item = $"value to ui = {data}";
+                        listBox.Items.Add(item);
+                        writeLogWithTime(item);
+                    }
+
+                }, uiScheduler);
+            };
+
+            System.Windows.Forms.Application.Run(form);
+        }
+
+        static void Task_with_ContinueWith_for_thread_switch()
+        {
+            ExecuteSynchronously_BeforeTaskCompleted();
+
+            Console.WriteLine();
+            ExecuteSynchronously_AfterTaskCompleted();
+
+            Console.WriteLine();
+            TaskScheduler_Current();
+
+            Console.WriteLine();
+            UI_ThreadScheduler();
+
+			Console.ReadLine();
+        }
+
+        //=========================================================================================
+
+        static async Task Task_with_TaskAwaiter()
 		{
 			Task<Int32> t = Task<Int32>.Run(() =>
 			{
@@ -2678,7 +2999,7 @@ namespace MultiThread
 
 			//Task_with_TaskAwaiter();
 
-			//Task_with_ContinueWith_for_thread_switch();
+			Task_with_ContinueWith_for_thread_switch();
 
 			//Task_with_TaskContinuationOptions();
 
@@ -2694,7 +3015,7 @@ namespace MultiThread
 
 			//Task_StartNew_vs_Run();
 
-			Task_StartNew_with_ThreadPool();
+			//Task_StartNew_with_ThreadPool();
 
 			//Task_with_TaskCreationOptions();
 

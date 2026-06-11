@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-	<CentralPackageVersionOverrideEnabled>true</CentralPackageVersionOverrideEnabled>	
+    <CentralPackageVersionOverrideEnabled>true</CentralPackageVersionOverrideEnabled>
   </PropertyGroup>
   <ItemGroup>
     <!-- Utility -->
@@ -9,6 +9,8 @@
     <PackageVersion Include="ClosedXML.Extensions.Mvc" Version="0.5.0" />
     <PackageVersion Include="ClosedXML.Parser" Version="2.0.0" />
     <PackageVersion Include="ClosedXML.Report" Version="0.2.12" />
+    <PackageVersion Include="DeepCloner" Version="0.10.4" />
+    <PackageVersion Include="FastDeepCloner" Version="1.3.6" />
     <PackageVersion Include="MediaBrowser.Common" Version="4.8.11" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc" Version="2.3.9" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="11.0.0-preview.3.26207.106" />
@@ -17,12 +19,15 @@
     <PackageVersion Include="BenchmarkDotNet" Version="0.15.4" />
     <PackageVersion Include="AutoMapper" Version="16.1.1" />
     <PackageVersion Include="NLog" Version="6.1.2" />
+    <PackageVersion Include="NUnit" Version="4.6.1" />
+    <PackageVersion Include="NUnit.Analyzers" Version="4.14.0" />
+    <PackageVersion Include="NUnit.ConsoleRunner" Version="3.22.0" />
+    <PackageVersion Include="NUnit3TestAdapter" Version="6.2.0" />
     <PackageVersion Include="OpenQA.Selenium.Chrome.ChromeDriverExtensions" Version="1.2.0" />
     <PackageVersion Include="Selenium.Support" Version="4.36.0" />
     <PackageVersion Include="Selenium.WebDriver" Version="4.36.0" />
     <PackageVersion Include="Selenium.WebDriver.ChromeDriver" Version="147.0.7727.11700" />
     <PackageVersion Include="System.Data.SQLite" Version="2.0.3" />
-	
     <PackageVersion Include="MSTest.TestFramework" Version="4.2.2" />
     <PackageVersion Include="MSTest.TestAdapter" Version="4.2.2" />
   </ItemGroup>

@@ -12,7 +12,7 @@ namespace MultiThread;
 public class ValueTask
 {
 
-    static ValueTask<int> ValueTask_what()
+    static System.Threading.Tasks.ValueTask<int> ValueTask_what()
     {
         /*
             📄 ValueTask
@@ -45,26 +45,68 @@ public class ValueTask
 
        */
 
-        return new ValueTask<int>(123); // 즉시 결과 반환
+        return new System.Threading.Tasks.ValueTask<int>(123); // 즉시 결과 반환
     }
 
-    static async Task<int> getFromAsync(int value)
+    static async System.Threading.Tasks.Task<int> getFromAsync(int value)
     {
+        // 실제 비동기 작업이 발생하는 경우를 흉내낸다.
         await Task.Delay(100); // 비동기 작업 시뮬레이션
         return value;
     }
 
-    static ValueTask<int> use_ValueTask(bool useTask, int value)
+    static System.Threading.Tasks.ValueTask<int> use_ValueTask(bool useTask, int value)
     {
-        if(useTask == false)
+        // 즉시 결과를 반환할 수 있는 경우.
+        // Task 객체를 만들지 않고 ValueTask에 결과값을 직접 담아 반환한다.
+
+        if (useTask == false)
             return new ValueTask<int>(value); // ✅ 즉시 결과
 
-        // ✅ Task<int>를 만들어서 ValueTask<int>로 감쌈
-        return new ValueTask<int>(getFromAsync(value));
+        // 실제 비동기 작업이 필요한 경우.
+        // ✅  내부적으로 Task<int>를 만들어서 ValueTask<int>가 감싸서 반환한다.
+        return new System.Threading.Tasks.ValueTask<int>(getFromAsync(value));
+    }
+
+    static System.Threading.Tasks.ValueTask<int> returnValueTaskDirect()
+    {
+        // ValueTask<int> 자체를 그대로 호출자에게 반환한다.
+        // 불필요한 async 상태 머신이 생성되지 않는다.
+        Console.WriteLine("[returnValueTaskDirect] ValueTask.FromResult 바로 반환");
+
+        return System.Threading.Tasks.ValueTask.FromResult(100);
+    }
+
+    static async System.Threading.Tasks.ValueTask<int> returnAwaitValueTask()
+    {
+        // ValueTask<int>를 await 해서 int 값을 꺼낸 뒤,
+        // async 메서드가 다시 ValueTask<int>로 감싸서 반환한다.
+        Console.WriteLine("[returnAwaitValueTask] ValueTask.FromResult await 후 반환");
+
+        return await System.Threading.Tasks.ValueTask.FromResult(100);
+    }
+
+    static async System.Threading.Tasks.Task testReturnVsReturnAwait()
+    {
+        Console.WriteLine("========================================");
+        Console.WriteLine("[return vs return await] Start");
+        Console.WriteLine("========================================");
+
+        var direct = await returnValueTaskDirect();
+        Console.WriteLine($"Direct Result: {direct}");
+
+        var awaited = await returnAwaitValueTask();
+        Console.WriteLine($"Awaited Result: {awaited}");
+
+        Console.WriteLine("결과값은 같지만, return await 쪽은 한 번 await 후 다시 감싸서 반환한다.");
+
+        Console.ReadLine();
     }
 
     public static void Test()
     {
+        //testReturnVsReturnAwait().Wait();
+
         //use_ValueTask(useTask:false, 10);
 
         //ValueTask_what();

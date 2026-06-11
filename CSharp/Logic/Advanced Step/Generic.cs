@@ -525,34 +525,188 @@ namespace AdvancedStep
         static void generic_type_constraint()
         {
             /*
-                C# Generics를 선언할 때, 타입 파라미터가 Value Type인지 Reference 타입인지,
-                또는 어떤 특정 베이스 클래스로부터 파생된 타입인지,
-                어떤 인터페이스를 구현한 타입인지 등등을 지정할 수 있는데,
-                이는 where T : 제약조건 과 같은 식으로 where 뒤에 제약 조건을 붙이면 가능하다.
-                아래는 다양한 제약을 가한 예제들이다.
+                📚 C# Generic Type Constraint
+
+                1. 개요
+
+                    - C# Generic Type Constraint는 제네릭 타입 파라미터에
+                      사용할 수 있는 타입의 조건을 제한하는 기능이다.
+
+                    - where 절을 사용해서 타입 파라미터 T에 제약 조건을 지정한다.
+
+                          class Sample<T> where T : class
+                          {
+                          }
+
+                    - 제약 조건을 사용하면 잘못된 타입 사용을 컴파일 단계에서 차단할 수 있다.
+
+                    - 사용 가능 환경
+
+                          C# 2.0 이상  : 기본 제네릭 제약 조건 지원
+                          C# 7.3 이상  : unmanaged 제약 조건 지원
+                          C# 8.0 이상  : notnull, nullable reference type 관련 제약 조건 지원
 
 
-                    제약 조건                       설명
+                2. 기본 개념
 
-                    where T : struct                형식 인수가 값 형식이어야 합니다.
-                                                    Nullable 를 제외한 임의의 값 형식을 지정할 수 있습니다.
-                                                    자세한 내용은 Nullable 형식 사용(C# 프로그래밍 가이드) 를 참조하십시오.
+                    - 제네릭 타입 파라미터 T에 조건을 붙이는 구조이다.
 
-                    where T : class                 형식 인수가 참조 형식이어야 합니다.
-                                                    이는 모든 클래스, 인터페이스, 대리자 또는 배열 형식에도 적용 됩니다.
+                          class 클래스명<T> where T : 제약조건
+                          {
+                          }
 
-                    where T : new()                 형식 인수가 매개 변수 없는 공용 생성자를 가지고 있어야 합니다.
-                                                    다른 제약 조건과 함께 사용하는 경우 new() 제약 조건은 마지막에 지정 해야 합니다.
+                    - 제네릭 메서드에도 사용할 수 있다.
 
-                    where T : <기본 클래스 이름>    형식 인수가 지정된 기본 클래스이거나 지정된 기본 클래스에서 파생되어야 합니다.
+                          void Method<T>(T value) where T : class
+                          {
+                          }
 
-                    where T : <인터페이스 이름>     형식 인수가 지정된 인터페이스이거나 지정된 인터페이스를 구현해야 합니다.
-                                                    여러 인터페이스 제약 조건을 지정할 수 있습니다.
-                                                    제한하는 인터페이스는 제네릭이 될 수도 있습니다.
+                    - 여러 제약 조건을 동시에 지정할 수 있다.
 
-                    where T : U                     T 에 대해 지정한 형식 인수가 U에 대해 지정한 인수 이거나
-                                                    이 인수에서 파생되어야 합니다.
+                          class Repository<T> where T : class, IEntity, new()
+                          {
+                          }
 
+                    - 단, new() 제약 조건은 항상 마지막에 작성해야 한다.
+
+
+                3. 핵심 특징
+
+                    - 제약 조건은 컴파일 타임에 검사된다.
+
+                    - 조건을 만족하지 않는 타입을 사용하면 컴파일 오류가 발생한다.
+
+                    - 제약 조건을 사용하면 제네릭 내부에서 특정 기능을 안전하게 사용할 수 있다.
+
+                          where T : new()        -> new T() 사용 가능
+                          where T : IEntity      -> IEntity 멤버 사용 가능
+                          where T : class        -> 참조 형식만 허용
+                          where T : struct       -> 값 형식만 허용
+
+
+                4. 실행 흐름
+
+                    1) 제네릭 타입 또는 메서드 선언
+
+                          class Repository<T> where T : class, IEntity, new()
+
+                    2) 실제 타입 인수 지정
+
+                          Repository<User> repository = new Repository<User>();
+
+                    3) 컴파일러가 User 타입이 제약 조건을 만족하는지 검사
+
+                          User가 class 타입인가?
+                          User가 IEntity를 구현했는가?
+                          User가 public 기본 생성자를 가지고 있는가?
+
+                    4) 조건을 만족하면 컴파일 성공
+
+                    5) 조건을 만족하지 않으면 컴파일 오류 발생
+
+
+                5. 대표 제약 조건
+
+                    where T : struct
+
+                        - T는 Nullable<T>를 제외한 값 형식이어야 한다.
+                        - int, float, bool, enum, 사용자 정의 struct 등이 해당된다.
+
+                    where T : class
+
+                        - T는 참조 형식이어야 한다.
+                        - class, interface, delegate, array 등이 해당된다.
+
+                    where T : class?
+
+                        - nullable 참조 형식까지 허용하는 참조 형식이어야 한다.
+                        - Nullable Reference Type 문맥에서 사용된다.
+
+                    where T : notnull
+
+                        - T는 null이 될 수 없는 타입이어야 한다.
+                        - non-nullable value type 또는 non-nullable reference type이 해당된다.
+
+                    where T : unmanaged
+
+                        - T는 관리되지 않는 값 형식이어야 한다.
+                        - 참조 타입 필드를 포함하지 않는 struct에 사용할 수 있다.
+
+                    where T : new()
+
+                        - T는 public 매개 변수 없는 생성자를 가져야 한다.
+                        - 다른 제약 조건과 함께 사용할 경우 반드시 마지막에 작성해야 한다.
+
+                    where T : BaseClass
+
+                        - T는 지정한 BaseClass 타입이거나 BaseClass를 상속받은 타입이어야 한다.
+
+                    where T : IInterface
+
+                        - T는 지정한 인터페이스를 구현한 타입이어야 한다.
+                        - 여러 인터페이스 제약 조건을 함께 지정할 수 있다.
+
+                    where T : U
+
+                        - T는 다른 타입 파라미터 U와 같거나 U로부터 파생된 타입이어야 한다.
+
+
+                6. 멀티 스레드 환경에서 작동 특징
+
+                    - Generic Type Constraint 자체는 스레드를 생성하거나 관리하지 않는다.
+
+                    - where T : class, where T : new(), where T : IService 같은 제약 조건은
+                      멀티 스레드 동기화 기능과 직접적인 관련이 없다.
+
+                    - 제약 조건은 타입 안정성을 보장할 뿐이다.
+
+                    - 스레드 안전성은 제네릭 클래스 내부 구현 방식에 따라 결정된다.
+
+                    - 멀티 스레드 환경에서 공유 컬렉션을 사용할 경우 별도 동기화 처리가 필요하다.
+
+                          lock
+                          ConcurrentDictionary
+                          Immutable Collection
+                          ReaderWriterLockSlim
+                          Channel
+                          Actor 구조
+
+
+                7. 주의점
+
+                    - new() 제약 조건은 항상 마지막에 작성해야 한다.
+
+                          where T : class, new()
+
+                    - struct와 class 제약 조건은 함께 사용할 수 없다.
+
+                          where T : struct, class     // 불가능
+
+                    - struct 제약 조건이 있으면 new() 제약 조건을 별도로 붙일 필요가 없다.
+
+                    - base class 제약 조건은 하나만 지정할 수 있다.
+
+                    - interface 제약 조건은 여러 개 지정할 수 있다.
+
+                    - unmanaged는 struct보다 더 강한 제약 조건이다.
+
+                    - notnull은 컴파일러의 null 가능성 분석과 관련이 크며,
+                      런타임에서 null을 완전히 차단하는 기능은 아니다.
+
+
+                8. 예상 결과
+
+                    - 잘못된 타입 사용을 컴파일 단계에서 차단할 수 있다.
+
+                    - 제네릭 내부에서 특정 메서드나 프로퍼티를 안전하게 사용할 수 있다.
+
+                    - new T() 같은 객체 생성 코드를 안전하게 작성할 수 있다.
+
+                    - 런타임 타입 체크 코드를 줄일 수 있다.
+
+                    - 제네릭 코드의 의도를 명확하게 표현할 수 있다.
+
+                    - 타입 안정성이 높은 공통 라이브러리 코드를 작성할 수 있다.
             */
             {
                 var pcList = new PC[3];
