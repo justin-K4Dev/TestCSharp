@@ -73,7 +73,7 @@ namespace CSharp
             //MultiThread.SemaphoreSlim.Test();
             //MultiThread.TaskCompletionSourceExample.Test();
             //MultiThread.TaskScheduler.Test();
-            MultiThread.Tasking.Test();
+            //MultiThread.Tasking.Test();
             //MultiThread.TaskFlowExample.Test();
             //MultiThread.Thread.Test();
             //MultiThread.ThreadPool.Test();

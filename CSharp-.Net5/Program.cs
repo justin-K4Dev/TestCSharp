@@ -5,66 +5,65 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace CSharp_Net5
+namespace CSharp_.Net5;
+
+public class Program
 {
-	class Program
+	static void Main(string[] args)
 	{
-		static void Main(string[] args)
-		{
-            Console.WriteLine($"Program.Main() Start - TID:{System.Threading.Thread.CurrentThread.ManagedThreadId}");
+        Console.WriteLine($"Program.Main() Start - TID:{System.Threading.Thread.CurrentThread.ManagedThreadId}");
 
-            //AdvancedStep.Channel.Test();
-            //AdvancedStep.ExpressionTree.Test();
-            //AdvancedStep.UnsafeContext.Test();
-            //AdvancedStep.PlS.Test();
-            //AdvancedStep.Span.Test();
-            //AdvancedStep.InitOnlySetter.Test();
-            //AdvancedStep.RequiredMember.Test();
-            //AdvancedStep.DefaultInterfaceMethods.Test();
-            //AdvancedStep.Reflection.Test();
-            //AdvancedStep.Record.Test();
-            //AdvancedStep.CallerInformationAttributes.Test();
-            //AdvancedStep.InitMember.Test();
-            //AdvancedStep.StaticLocalFunction.Test();
-            //AdvancedStep.RawStringLiterals.Test();
-            //AdvancedStep.AutoPropertyInitializer.Test();
-            //AdvancedStep.DictionaryInitializer.Test();
-            //AdvancedStep.ExpressionBodied.Test();
-            //AdvancedStep.ExpressionTree.Test();
-            //AdvancedStep.TargetTypeNew.Test();
-            //AdvancedStep.NameOf.Test();
-            //AdvancedStep.NullConditionalOperator.Test().Waitt();
-            //AdvancedStep.Operator.Test();
-            //AdvancedStep.Tuple.Test();
-            //AdvancedStep.String.Test();
-            //AdvancedStep.StringInterpolation.Test();
-            //AdvancedStep.UsingDeclaration.Test();
-            //AdvancedStep.UsingStatic.Test();
-            //AdvancedStep.CheckedUnchecked.Test();
-            //AdvancedStep.Switch.Test();
-            //AdvancedStep.ArrayPool.Test();
-            //AdvancedStep.MemoryPool.Test();
-            //AdvancedStep.CLRMemory.Test();
-            //AdvancedStep.GCFree.Test();
-            //AdvancedStep.Dump.CreateDump.Test();
-            //AdvancedStep.Dump.DiagnosticsClient.Test();
+        //AdvancedStep.Channel.Test();
+        //AdvancedStep.ExpressionTree.Test();
+        //AdvancedStep.UnsafeContext.Test();
+        //AdvancedStep.PlS.Test();
+        //AdvancedStep.Span.Test();
+        //AdvancedStep.InitOnlySetter.Test();
+        //AdvancedStep.RequiredMember.Test();
+        //AdvancedStep.DefaultInterfaceMethods.Test();
+        //AdvancedStep.Reflection.Test();
+        //AdvancedStep.Record.Test();
+        //AdvancedStep.CallerInformationAttributes.Test();
+        //AdvancedStep.InitMember.Test();
+        //AdvancedStep.StaticLocalFunction.Test();
+        //AdvancedStep.RawStringLiterals.Test();
+        //AdvancedStep.AutoPropertyInitializer.Test();
+        //AdvancedStep.DictionaryInitializer.Test();
+        //AdvancedStep.ExpressionBodied.Test();
+        //AdvancedStep.ExpressionTree.Test();
+        //AdvancedStep.TargetTypeNew.Test();
+        //AdvancedStep.NameOf.Test();
+        //AdvancedStep.NullConditionalOperator.Test().Waitt();
+        //AdvancedStep.Operator.Test();
+        //AdvancedStep.Tuple.Test();
+        //AdvancedStep.String.Test();
+        //AdvancedStep.StringInterpolation.Test();
+        //AdvancedStep.UsingDeclaration.Test();
+        //AdvancedStep.UsingStatic.Test();
+        //AdvancedStep.CheckedUnchecked.Test();
+        //AdvancedStep.Switch.Test();
+        //AdvancedStep.ArrayPool.Test();
+        //AdvancedStep.MemoryPool.Test();
+        //AdvancedStep.CLRMemory.Test();
+        //AdvancedStep.GCFree.Test();
+        //AdvancedStep.Dump.CreateDump.Test();
+        //AdvancedStep.Dump.DiagnosticsClient.Test();
 
 
-            //MultiThread.ValueTask.Test();
-            //MultiThread.Tasking.Test();
-            //MultiThread.PeriodicTimer.Test();
-            //MultiThread.Parallel.Test();
-            //MultiThread.AwaitInCatchBlock.Test();
-            //MultiThread.AsyncAwait.Test().Wait();
+        //MultiThread.ValueTask.Test();
+        //MultiThread.Tasking.Test();
+        //MultiThread.PeriodicTimer.Test();
+        //MultiThread.Parallel.Test();
+        //MultiThread.AwaitInCatchBlock.Test();
+        //MultiThread.AsyncAwait.Test().Wait();
 
 
-            //Performance.BoxingUnboxingBenchmark.Test();
-            //Performance.ConcurrencyAPIComparison.Test();
+        //Performance.BoxingUnboxingBenchmark.Test();
+        //Performance.ConcurrencyAPIComparison.Test();
 
 
-            Console.WriteLine($"Program.Main() End - TID:{System.Threading.Thread.CurrentThread.ManagedThreadId}");
+        Console.WriteLine($"Program.Main() End - TID:{System.Threading.Thread.CurrentThread.ManagedThreadId}");
 
-            Console.ReadLine();
-        }
+        Console.ReadLine();
     }
 }
